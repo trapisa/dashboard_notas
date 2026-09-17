@@ -1,0 +1,663 @@
+<title>NFs Cedidas Trapisa</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<script>const STYLE_CSS_SRC = "\n:root{\n  --bg:#f2f4f7; --panel:#ffffff; --panel2:#eceff3; --border:#dde2e9;\n  --text:#171b24; --muted:#646d7d;\n  --accent:#28527a; --accent-soft:#e4ecf4;\n  --green:#1c8f57; --green-soft:#e2f5ea;\n  --amber:#a8680a; --amber-soft:#faedd8;\n  --red:#bd3b50; --red-soft:#fbe6ea;\n  --font-sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;\n  --font-mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;\n}\n@media (prefers-color-scheme: dark){\n  :root:not([data-theme=\"light\"]){\n    --bg:#0e1116; --panel:#161a22; --panel2:#1d2129; --border:#2a2f3a;\n    --text:#e7eaf0; --muted:#8b93a4;\n    --accent:#8fb6df; --accent-soft:#1f2e3f;\n    --green:#4fcf8c; --green-soft:#173626;\n    --amber:#e0a856; --amber-soft:#3a2c14;\n    --red:#f0788c; --red-soft:#3a1c22;\n  }\n}\n:root[data-theme=\"dark\"]{\n  --bg:#0e1116; --panel:#161a22; --panel2:#1d2129; --border:#2a2f3a;\n  --text:#e7eaf0; --muted:#8b93a4;\n  --accent:#8fb6df; --accent-soft:#1f2e3f;\n  --green:#4fcf8c; --green-soft:#173626;\n  --amber:#e0a856; --amber-soft:#3a2c14;\n  --red:#f0788c; --red-soft:#3a1c22;\n}\n*{box-sizing:border-box;}\nbody{\n  margin:0; background:var(--bg); color:var(--text);\n  font-family:var(--font-sans);\n  padding-inline:16px; padding-block:20px 40px;\n}\n.wrap{max-width:1180px; margin:0 auto;}\nheader{margin-bottom:22px; display:flex; flex-direction:column; gap:3px;}\nh1{font-size:1.35rem; margin:0; font-weight:650; letter-spacing:-0.01em;}\n.subtitle{color:var(--muted); font-size:0.85rem;}\n\n.update-bar{\n  display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom:14px;\n  background:var(--panel); border:1px solid var(--border); border-radius:12px;\n  padding:12px 14px;\n}\n.update-bar .info{flex:1; min-width:220px;}\n.update-bar .info .t{font-size:0.85rem; font-weight:600;}\n.update-bar .info .d{font-size:0.76rem; color:var(--muted); margin-top:2px;}\n.update-bar input[type=file]{display:none;}\n.btn{\n  display:inline-flex; align-items:center; gap:6px; cursor:pointer;\n  background:var(--accent-soft); color:var(--accent); border:1px solid var(--accent);\n  border-radius:8px; padding:8px 14px; font-size:0.83rem; font-weight:600; font-family:inherit;\n}\n.btn:hover{filter:brightness(1.05);}\n.btn:disabled{opacity:0.55; cursor:not-allowed;}\n.status-msg{font-size:0.78rem; padding:2px 0; min-height:1.1em;}\n.status-msg.success{color:var(--green);}\n.status-msg.error{color:var(--red);}\n.status-msg.warning{color:var(--amber);}\n.status-msg.pending{color:var(--muted);}\n\n.filters{\n  display:flex; gap:12px; flex-wrap:wrap; margin-bottom:18px;\n  background:var(--panel); border:1px solid var(--border); border-radius:12px;\n  padding:14px;\n}\n.filter-group{display:flex; flex-direction:column; gap:5px; min-width:160px; flex:1;}\n.filter-group label{font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; font-weight:600;}\nselect{\n  background:var(--panel2); color:var(--text); border:1px solid var(--border);\n  border-radius:8px; padding:9px 10px; font-size:0.88rem; font-family:inherit;\n}\nselect:focus-visible, button:focus-visible{outline:2px solid var(--accent); outline-offset:1px;}\n\n.cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:12px; margin-bottom:20px;}\n.card{\n  background:var(--panel); border:1px solid var(--border); border-radius:12px;\n  padding:16px 18px;\n}\n.card .label{font-size:0.74rem; color:var(--muted); margin-bottom:7px; font-weight:500;}\n.card .value{font-size:1.55rem; font-weight:650; letter-spacing:-.015em; font-family:var(--font-mono);}\n.card.highlight{background:var(--accent-soft); border-color:var(--accent);}\n.card.highlight .value{color:var(--accent);}\n\n.section{\n  background:var(--panel); border:1px solid var(--border); border-radius:12px;\n  margin-bottom:16px; overflow:hidden;\n}\n.section-header{\n  padding:14px 18px; border-bottom:1px solid var(--border);\n  display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;\n}\n.section-header h2{font-size:0.95rem; margin:0; font-weight:600;}\n.section-header .hint{font-size:0.76rem; color:var(--muted);}\n\n.table-scroll{max-height:520px; overflow:auto;}\ntable{width:100%; border-collapse:collapse; font-size:0.85rem;}\nth{\n  text-align:left; padding:10px 14px; color:var(--muted); font-weight:600;\n  font-size:0.7rem; text-transform:uppercase; letter-spacing:.05em;\n  border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--panel);\n}\ntd{padding:9px 14px; border-bottom:1px solid var(--border); vertical-align:top;}\ntr:last-child td{border-bottom:none;}\ntr.subtotal-row td{background:var(--panel2); font-weight:650;}\ntr.grand-total td{background:var(--accent-soft); font-weight:700; font-size:0.92rem; color:var(--accent);}\ntbody tr:hover td{background:color-mix(in srgb, var(--text) 4%, transparent);}\n.right{text-align:right;}\n.mono{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}\n\n.badge{\n  display:inline-block; padding:3px 9px; border-radius:99px; font-size:0.72rem; font-weight:600;\n  white-space:nowrap;\n}\n.badge.aberto{background:var(--amber-soft); color:var(--amber);}\n.badge.paga{background:var(--green-soft); color:var(--green);}\n.badge.pago_nota{background:var(--red-soft); color:var(--red); cursor:help; border-bottom:1px dashed var(--red);}\n\n.empty-state{padding:34px; text-align:center; color:var(--muted); font-size:0.88rem;}\n\n.legend{padding:12px 18px; font-size:0.78rem; color:var(--muted); border-top:1px solid var(--border); line-height:1.55;}\n.legend b{color:var(--text);}\n\nfooter{color:var(--muted); font-size:0.74rem; text-align:center; margin-top:22px;}\n\n@media (max-width:640px){\n  .cards{grid-template-columns:1fr 1fr;}\n  .card .value{font-size:1.15rem;}\n  th, td{padding:8px 8px; font-size:0.78rem;}\n}\n\n.login-wrap{\n  min-height:100vh; min-height:100dvh; display:flex; align-items:center; justify-content:center;\n  padding:16px;\n}\n.login-card{\n  width:100%; max-width:360px; background:var(--panel); border:1px solid var(--border);\n  border-radius:14px; padding:28px 26px; box-shadow:0 8px 30px color-mix(in srgb, var(--text) 8%, transparent);\n}\n.login-card .lock{font-size:1.6rem; margin-bottom:10px;}\n.login-card h1{font-size:1.1rem; margin:0 0 4px 0; font-weight:650;}\n.login-card .sub{font-size:0.8rem; color:var(--muted); margin-bottom:20px; line-height:1.4;}\n.login-field{display:flex; flex-direction:column; gap:5px; margin-bottom:14px;}\n.login-field label{font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; font-weight:600;}\n.login-field input{\n  background:var(--panel2); color:var(--text); border:1px solid var(--border);\n  border-radius:8px; padding:10px 11px; font-size:0.92rem; font-family:inherit;\n}\n.login-field input:focus-visible{outline:2px solid var(--accent); outline-offset:1px;}\n.login-submit{\n  width:100%; margin-top:6px; background:var(--accent); color:#fff; border:none;\n  border-radius:8px; padding:11px; font-size:0.9rem; font-weight:650; font-family:inherit; cursor:pointer;\n}\n.login-submit:hover{filter:brightness(1.08);}\n.login-submit:disabled{opacity:0.6; cursor:not-allowed;}\n.login-error{font-size:0.8rem; color:var(--red); margin-top:12px; min-height:1.1em;}\n.login-note{font-size:0.72rem; color:var(--muted); margin-top:18px; line-height:1.45; border-top:1px solid var(--border); padding-top:14px;}\n";</script>
+<style>
+:root{
+  --bg:#f2f4f7; --panel:#ffffff; --panel2:#eceff3; --border:#dde2e9;
+  --text:#171b24; --muted:#646d7d;
+  --accent:#28527a; --accent-soft:#e4ecf4;
+  --green:#1c8f57; --green-soft:#e2f5ea;
+  --amber:#a8680a; --amber-soft:#faedd8;
+  --red:#bd3b50; --red-soft:#fbe6ea;
+  --font-sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1116; --panel:#161a22; --panel2:#1d2129; --border:#2a2f3a;
+    --text:#e7eaf0; --muted:#8b93a4;
+    --accent:#8fb6df; --accent-soft:#1f2e3f;
+    --green:#4fcf8c; --green-soft:#173626;
+    --amber:#e0a856; --amber-soft:#3a2c14;
+    --red:#f0788c; --red-soft:#3a1c22;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1116; --panel:#161a22; --panel2:#1d2129; --border:#2a2f3a;
+  --text:#e7eaf0; --muted:#8b93a4;
+  --accent:#8fb6df; --accent-soft:#1f2e3f;
+  --green:#4fcf8c; --green-soft:#173626;
+  --amber:#e0a856; --amber-soft:#3a2c14;
+  --red:#f0788c; --red-soft:#3a1c22;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:var(--font-sans);
+  padding-inline:16px; padding-block:20px 40px;
+}
+.wrap{max-width:1180px; margin:0 auto;}
+header{margin-bottom:22px; display:flex; flex-direction:column; gap:3px;}
+h1{font-size:1.35rem; margin:0; font-weight:650; letter-spacing:-0.01em;}
+.subtitle{color:var(--muted); font-size:0.85rem;}
+
+.update-bar{
+  display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom:14px;
+  background:var(--panel); border:1px solid var(--border); border-radius:12px;
+  padding:12px 14px;
+}
+.update-bar .info{flex:1; min-width:220px;}
+.update-bar .info .t{font-size:0.85rem; font-weight:600;}
+.update-bar .info .d{font-size:0.76rem; color:var(--muted); margin-top:2px;}
+.update-bar input[type=file]{display:none;}
+.btn{
+  display:inline-flex; align-items:center; gap:6px; cursor:pointer;
+  background:var(--accent-soft); color:var(--accent); border:1px solid var(--accent);
+  border-radius:8px; padding:8px 14px; font-size:0.83rem; font-weight:600; font-family:inherit;
+}
+.btn:hover{filter:brightness(1.05);}
+.btn:disabled{opacity:0.55; cursor:not-allowed;}
+.status-msg{font-size:0.78rem; padding:2px 0; min-height:1.1em;}
+.status-msg.success{color:var(--green);}
+.status-msg.error{color:var(--red);}
+.status-msg.warning{color:var(--amber);}
+.status-msg.pending{color:var(--muted);}
+
+.filters{
+  display:flex; gap:12px; flex-wrap:wrap; margin-bottom:18px;
+  background:var(--panel); border:1px solid var(--border); border-radius:12px;
+  padding:14px;
+}
+.filter-group{display:flex; flex-direction:column; gap:5px; min-width:160px; flex:1;}
+.filter-group label{font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; font-weight:600;}
+select{
+  background:var(--panel2); color:var(--text); border:1px solid var(--border);
+  border-radius:8px; padding:9px 10px; font-size:0.88rem; font-family:inherit;
+}
+select:focus-visible, button:focus-visible{outline:2px solid var(--accent); outline-offset:1px;}
+
+.cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:12px; margin-bottom:20px;}
+.card{
+  background:var(--panel); border:1px solid var(--border); border-radius:12px;
+  padding:16px 18px;
+}
+.card .label{font-size:0.74rem; color:var(--muted); margin-bottom:7px; font-weight:500;}
+.card .value{font-size:1.55rem; font-weight:650; letter-spacing:-.015em; font-family:var(--font-mono);}
+.card.highlight{background:var(--accent-soft); border-color:var(--accent);}
+.card.highlight .value{color:var(--accent);}
+
+.section{
+  background:var(--panel); border:1px solid var(--border); border-radius:12px;
+  margin-bottom:16px; overflow:hidden;
+}
+.section-header{
+  padding:14px 18px; border-bottom:1px solid var(--border);
+  display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;
+}
+.section-header h2{font-size:0.95rem; margin:0; font-weight:600;}
+.section-header .hint{font-size:0.76rem; color:var(--muted);}
+
+.table-scroll{max-height:520px; overflow:auto;}
+table{width:100%; border-collapse:collapse; font-size:0.85rem;}
+th{
+  text-align:left; padding:10px 14px; color:var(--muted); font-weight:600;
+  font-size:0.7rem; text-transform:uppercase; letter-spacing:.05em;
+  border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--panel);
+}
+td{padding:9px 14px; border-bottom:1px solid var(--border); vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tr.subtotal-row td{background:var(--panel2); font-weight:650;}
+tr.grand-total td{background:var(--accent-soft); font-weight:700; font-size:0.92rem; color:var(--accent);}
+tbody tr:hover td{background:color-mix(in srgb, var(--text) 4%, transparent);}
+.right{text-align:right;}
+.mono{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+
+.badge{
+  display:inline-block; padding:3px 9px; border-radius:99px; font-size:0.72rem; font-weight:600;
+  white-space:nowrap;
+}
+.badge.aberto{background:var(--amber-soft); color:var(--amber);}
+.badge.paga{background:var(--green-soft); color:var(--green);}
+.badge.pago_nota{background:var(--red-soft); color:var(--red); cursor:help; border-bottom:1px dashed var(--red);}
+
+.empty-state{padding:34px; text-align:center; color:var(--muted); font-size:0.88rem;}
+
+.legend{padding:12px 18px; font-size:0.78rem; color:var(--muted); border-top:1px solid var(--border); line-height:1.55;}
+.legend b{color:var(--text);}
+
+footer{color:var(--muted); font-size:0.74rem; text-align:center; margin-top:22px;}
+
+@media (max-width:640px){
+  .cards{grid-template-columns:1fr 1fr;}
+  .card .value{font-size:1.15rem;}
+  th, td{padding:8px 8px; font-size:0.78rem;}
+}
+
+.login-wrap{
+  min-height:100vh; min-height:100dvh; display:flex; align-items:center; justify-content:center;
+  padding:16px;
+}
+.login-card{
+  width:100%; max-width:360px; background:var(--panel); border:1px solid var(--border);
+  border-radius:14px; padding:28px 26px; box-shadow:0 8px 30px color-mix(in srgb, var(--text) 8%, transparent);
+}
+.login-card .lock{font-size:1.6rem; margin-bottom:10px;}
+.login-card h1{font-size:1.1rem; margin:0 0 4px 0; font-weight:650;}
+.login-card .sub{font-size:0.8rem; color:var(--muted); margin-bottom:20px; line-height:1.4;}
+.login-field{display:flex; flex-direction:column; gap:5px; margin-bottom:14px;}
+.login-field label{font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; font-weight:600;}
+.login-field input{
+  background:var(--panel2); color:var(--text); border:1px solid var(--border);
+  border-radius:8px; padding:10px 11px; font-size:0.92rem; font-family:inherit;
+}
+.login-field input:focus-visible{outline:2px solid var(--accent); outline-offset:1px;}
+.login-submit{
+  width:100%; margin-top:6px; background:var(--accent); color:#fff; border:none;
+  border-radius:8px; padding:11px; font-size:0.9rem; font-weight:650; font-family:inherit; cursor:pointer;
+}
+.login-submit:hover{filter:brightness(1.08);}
+.login-submit:disabled{opacity:0.6; cursor:not-allowed;}
+.login-error{font-size:0.8rem; color:var(--red); margin-top:12px; min-height:1.1em;}
+.login-note{font-size:0.72rem; color:var(--muted); margin-top:18px; line-height:1.45; border-top:1px solid var(--border); padding-top:14px;}
+</style>
+<script>const BODY_TEMPLATE_SRC = "<div class=\"login-wrap\" id=\"login-screen\">\n  <div class=\"login-card\">\n    <div class=\"lock\">\ud83d\udd12</div>\n    <h1>Acesso restrito</h1>\n    <div class=\"sub\">Notas fiscais cedidas \u2014 Trapisa / LD. Entre com as credenciais fornecidas para continuar.</div>\n    <form id=\"login-form\" autocomplete=\"off\">\n      <div class=\"login-field\">\n        <label for=\"login-user\">Usu\u00e1rio</label>\n        <input type=\"text\" id=\"login-user\" autocomplete=\"username\" autocapitalize=\"off\" spellcheck=\"false\" required>\n      </div>\n      <div class=\"login-field\">\n        <label for=\"login-pass\">Senha</label>\n        <input type=\"password\" id=\"login-pass\" autocomplete=\"current-password\" required>\n      </div>\n      <button type=\"submit\" class=\"login-submit\" id=\"login-submit\">Entrar</button>\n      <div class=\"login-error\" id=\"login-error\"></div>\n    </form>\n    <div class=\"login-note\">Acesso individual \u2014 n\u00e3o compartilhe usu\u00e1rio e senha. A sess\u00e3o expira ao fechar esta aba.</div>\n  </div>\n</div>\n\n<div id=\"app-content\" hidden>\n<div class=\"wrap\">\n  <header>\n    <h1>Notas Fiscais Cedidas</h1>\n    <div class=\"subtitle\">Trapisa / LD \u2014 valores cedidos a fundos e situa\u00e7\u00e3o de pagamento</div>\n  </header>\n\n  <div class=\"update-bar\">\n    <div class=\"info\">\n      <div class=\"t\">Atualizar planilha</div>\n      <div class=\"d\">Carregue um novo Notas_Fiscais_Emitidas.xlsx para recalcular e publicar os dados para todos.</div>\n      <div class=\"status-msg\" id=\"upload-status\"></div>\n    </div>\n    <label class=\"btn\" for=\"file-input\">Carregar planilha (.xlsx)</label>\n    <input type=\"file\" id=\"file-input\" accept=\".xlsx\">\n  </div>\n\n  <div class=\"filters\">\n    <div class=\"filter-group\">\n      <label for=\"f-empresa\">Empresa</label>\n      <select id=\"f-empresa\">\n        <option value=\"todas\">Todas</option>\n        <option value=\"Trapisa\">Trapisa</option>\n        <option value=\"LD\">LD</option>\n      </select>\n    </div>\n    <div class=\"filter-group\">\n      <label for=\"f-fundo\">Fundo</label>\n      <select id=\"f-fundo\"><option value=\"todos\">Todos</option></select>\n    </div>\n    <div class=\"filter-group\">\n      <label for=\"f-status\">Status</label>\n      <select id=\"f-status\">\n        <option value=\"aberto\">Em aberto</option>\n        <option value=\"paga\">Pagas</option>\n        <option value=\"todas\">Todas</option>\n      </select>\n    </div>\n  </div>\n\n  <div class=\"cards\">\n    <div class=\"card highlight\">\n      <div class=\"label\">Total cedido (filtro atual)</div>\n      <div class=\"value mono\" id=\"c-total\">\u2014</div>\n    </div>\n    <div class=\"card\">\n      <div class=\"label\">Quantidade de notas</div>\n      <div class=\"value mono\" id=\"c-count\">\u2014</div>\n    </div>\n    <div class=\"card\">\n      <div class=\"label\">Quantidade de fundos</div>\n      <div class=\"value mono\" id=\"c-funds\">\u2014</div>\n    </div>\n  </div>\n\n  <div class=\"section\">\n    <div class=\"section-header\">\n      <h2>Total por fundo e empresa</h2>\n      <div class=\"hint\">Subtotal por fundo (soma das empresas) e total geral</div>\n    </div>\n    <div class=\"table-scroll\">\n      <table id=\"tbl-fundos\">\n        <thead>\n          <tr><th>Fundo</th><th>Empresa</th><th class=\"right\">Qtd. notas</th><th class=\"right\">Valor total</th></tr>\n        </thead>\n        <tbody id=\"tbl-fundos-body\"></tbody>\n      </table>\n    </div>\n  </div>\n\n  <div class=\"section\">\n    <div class=\"section-header\">\n      <h2>Detalhe das notas</h2>\n      <div class=\"hint\" id=\"detail-hint\">Notas que comp\u00f5em os totais acima</div>\n    </div>\n    <div class=\"table-scroll\">\n      <table id=\"tbl-detalhe\">\n        <thead>\n          <tr>\n            <th>NF</th><th>Empresa</th><th>Fundo</th><th>\u00d3rg\u00e3o</th><th>Status</th>\n            <th>Liquidada?</th><th>Emiss\u00e3o</th><th>Vencimento</th><th class=\"right\">Valor bruto</th>\n          </tr>\n        </thead>\n        <tbody id=\"tbl-detalhe-body\"></tbody>\n      </table>\n    </div>\n    <div class=\"legend\">\n      <b>Em aberto</b>: coluna \"Data de realiza\u00e7\u00e3o do pagamento\" vazia. &nbsp;\n      <b>Paga</b>: coluna preenchida com data. &nbsp;\n      <b>Pago (nota)</b>: coluna preenchida com texto (ex.: \"PARCIAL EM...\", \"CONSULTAR EXTRATO\", \"???\") em vez de data \u2014 passe o mouse para ver o texto original; requer confer\u00eancia manual, pois pode n\u00e3o representar quita\u00e7\u00e3o total. &nbsp;\n      \"Liquidada?\" \u00e9 apenas informativa, n\u00e3o entra nos c\u00e1lculos.\n    </div>\n  </div>\n\n  <footer>Dados extra\u00eddos de Notas_Fiscais_Emitidas.xlsx \u00b7 use \"Carregar planilha\" acima para atualizar os dados de todos os que abrirem este link</footer>\n</div>\n</div>";</script>
+<div class="login-wrap" id="login-screen">
+  <div class="login-card">
+    <div class="lock">🔒</div>
+    <h1>Acesso restrito</h1>
+    <div class="sub">Notas fiscais cedidas — Trapisa / LD. Entre com as credenciais fornecidas para continuar.</div>
+    <form id="login-form" autocomplete="off">
+      <div class="login-field">
+        <label for="login-user">Usuário</label>
+        <input type="text" id="login-user" autocomplete="username" autocapitalize="off" spellcheck="false" required>
+      </div>
+      <div class="login-field">
+        <label for="login-pass">Senha</label>
+        <input type="password" id="login-pass" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="login-submit" id="login-submit">Entrar</button>
+      <div class="login-error" id="login-error"></div>
+    </form>
+    <div class="login-note">Acesso individual — não compartilhe usuário e senha. A sessão expira ao fechar esta aba.</div>
+  </div>
+</div>
+
+<div id="app-content" hidden>
+<div class="wrap">
+  <header>
+    <h1>Notas Fiscais Cedidas</h1>
+    <div class="subtitle">Trapisa / LD — valores cedidos a fundos e situação de pagamento</div>
+  </header>
+
+  <div class="update-bar">
+    <div class="info">
+      <div class="t">Atualizar planilha</div>
+      <div class="d">Carregue um novo Notas_Fiscais_Emitidas.xlsx para recalcular e publicar os dados para todos.</div>
+      <div class="status-msg" id="upload-status"></div>
+    </div>
+    <label class="btn" for="file-input">Carregar planilha (.xlsx)</label>
+    <input type="file" id="file-input" accept=".xlsx">
+  </div>
+
+  <div class="filters">
+    <div class="filter-group">
+      <label for="f-empresa">Empresa</label>
+      <select id="f-empresa">
+        <option value="todas">Todas</option>
+        <option value="Trapisa">Trapisa</option>
+        <option value="LD">LD</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="f-fundo">Fundo</label>
+      <select id="f-fundo"><option value="todos">Todos</option></select>
+    </div>
+    <div class="filter-group">
+      <label for="f-status">Status</label>
+      <select id="f-status">
+        <option value="aberto">Em aberto</option>
+        <option value="paga">Pagas</option>
+        <option value="todas">Todas</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card highlight">
+      <div class="label">Total cedido (filtro atual)</div>
+      <div class="value mono" id="c-total">—</div>
+    </div>
+    <div class="card">
+      <div class="label">Quantidade de notas</div>
+      <div class="value mono" id="c-count">—</div>
+    </div>
+    <div class="card">
+      <div class="label">Quantidade de fundos</div>
+      <div class="value mono" id="c-funds">—</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <h2>Total por fundo e empresa</h2>
+      <div class="hint">Subtotal por fundo (soma das empresas) e total geral</div>
+    </div>
+    <div class="table-scroll">
+      <table id="tbl-fundos">
+        <thead>
+          <tr><th>Fundo</th><th>Empresa</th><th class="right">Qtd. notas</th><th class="right">Valor total</th></tr>
+        </thead>
+        <tbody id="tbl-fundos-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <h2>Detalhe das notas</h2>
+      <div class="hint" id="detail-hint">Notas que compõem os totais acima</div>
+    </div>
+    <div class="table-scroll">
+      <table id="tbl-detalhe">
+        <thead>
+          <tr>
+            <th>NF</th><th>Empresa</th><th>Fundo</th><th>Órgão</th><th>Status</th>
+            <th>Liquidada?</th><th>Emissão</th><th>Vencimento</th><th class="right">Valor bruto</th>
+          </tr>
+        </thead>
+        <tbody id="tbl-detalhe-body"></tbody>
+      </table>
+    </div>
+    <div class="legend">
+      <b>Em aberto</b>: coluna "Data de realização do pagamento" vazia. &nbsp;
+      <b>Paga</b>: coluna preenchida com data. &nbsp;
+      <b>Pago (nota)</b>: coluna preenchida com texto (ex.: "PARCIAL EM...", "CONSULTAR EXTRATO", "???") em vez de data — passe o mouse para ver o texto original; requer conferência manual, pois pode não representar quitação total. &nbsp;
+      "Liquidada?" é apenas informativa, não entra nos cálculos.
+    </div>
+  </div>
+
+  <footer>Dados extraídos de Notas_Fiscais_Emitidas.xlsx · use "Carregar planilha" acima para atualizar os dados de todos os que abrirem este link</footer>
+</div>
+</div>
+<script id="notas-data">window.NOTAS = [{"empresa": "Trapisa", "nf": 1020, "orgao": "ITA", "fundo": null, "cedida": false, "liquidada": null, "valor_bruto": 238590.27, "valor_bruto_texto_original": null, "emissao": "29/11/2023", "vencimento": "29/12/2023", "status": "paga", "status_display": "pago_nota", "pgto_data": null, "pgto_texto": "27/12/2023 (R$20.275,63) e 21/03/2024 (R$195.381,69)"}, {"empresa": "Trapisa", "nf": 1021, "orgao": "CRO2 (Itu)", "fundo": null, "cedida": false, "liquidada": null, "valor_bruto": 125360.67, "valor_bruto_texto_original": null, "emissao": "04/12/2023", "vencimento": "03/01/2024", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1023, "orgao": "ITA", "fundo": "BITGOV", "cedida": true, "liquidada": null, "valor_bruto": 312548.21, "valor_bruto_texto_original": null, "emissao": "14/12/2023", "vencimento": "13/01/2024", "status": "paga", "status_display": "paga", "pgto_data": "27/12/2023", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1024, "orgao": "CRO2 (Itu)", "fundo": "BITGOV", "cedida": true, "liquidada": null, "valor_bruto": 165175.22, "valor_bruto_texto_original": null, "emissao": "15/12/2023", "vencimento": "14/01/2024", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1025, "orgao": "Unimed", "fundo": null, "cedida": false, "liquidada": null, "valor_bruto": 33250.0, "valor_bruto_texto_original": null, "emissao": "02/01/2024", "vencimento": null, "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1026, "orgao": "Unimed", "fundo": null, "cedida": false, "liquidada": null, "valor_bruto": 31000.0, "valor_bruto_texto_original": null, "emissao": "17/01/2024", "vencimento": null, "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1028, "orgao": "CRO2 (CIAVEX)", "fundo": "BITGOV", "cedida": true, "liquidada": null, "valor_bruto": 114842.14, "valor_bruto_texto_original": null, "emissao": "19/01/2024", "vencimento": "18/02/2024", "status": "paga", "status_display": "paga", "pgto_data": "19/02/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1029, "orgao": "EsPCEx (Galpão Lonado)", "fundo": "BITGOV", "cedida": true, "liquidada": null, "valor_bruto": 138491.32, "valor_bruto_texto_original": null, "emissao": "19/01/2024", "vencimento": "18/02/2024", "status": "paga", "status_display": "paga", "pgto_data": "07/03/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1030, "orgao": "ITA", "fundo": null, "cedida": false, "liquidada": null, "valor_bruto": 456724.67, "valor_bruto_texto_original": null, "emissao": "23/01/2024", "vencimento": "22/02/2024", "status": "paga", "status_display": "paga", "pgto_data": "16/02/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1031, "orgao": "EsPCEx (Hotel)", "fundo": null, "cedida": false, "liquidada": null, "valor_bruto": 45811.63, "valor_bruto_texto_original": null, "emissao": "02/02/2024", "vencimento": "03/03/2024", "status": "paga", "status_display": "paga", "pgto_data": "29/04/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1032, "orgao": "CRO2 (Tasa)", "fundo": null, "cedida": false, "liquidada": null, "valor_bruto": 123808.47, "valor_bruto_texto_original": null, "emissao": "02/02/2024", "vencimento": "03/03/2024", "status": "paga", "status_display": "paga", "pgto_data": "29/02/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1033, "orgao": "CRO2 (Itu)", "fundo": null, "cedida": false, "liquidada": null, "valor_bruto": 98219.35, "valor_bruto_texto_original": null, "emissao": "08/02/2024", "vencimento": "09/03/2024", "status": "paga", "status_display": "paga", "pgto_data": "14/03/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1034, "orgao": "Missão da Ordem Libanesa Maronita", "fundo": null, "cedida": false, "liquidada": null, "valor_bruto": 136000.0, "valor_bruto_texto_original": null, "emissao": "15/02/2024", "vencimento": null, "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1035, "orgao": "ITA", "fundo": null, "cedida": false, "liquidada": null, "valor_bruto": 274336.05, "valor_bruto_texto_original": null, "emissao": "19/02/2024", "vencimento": "20/03/2024", "status": "paga", "status_display": "pago_nota", "pgto_data": null, "pgto_texto": "05/03/2024 (R$9.903,90) e 06/03/2024 (R$231.774,52)"}, {"empresa": "Trapisa", "nf": 1036, "orgao": "ARQUIDIOCESE DE CAMPINAS", "fundo": null, "cedida": false, "liquidada": null, "valor_bruto": 84950.0, "valor_bruto_texto_original": null, "emissao": "21/02/2024", "vencimento": null, "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1037, "orgao": "EsPCEx (Galpão Lonado)", "fundo": null, "cedida": false, "liquidada": null, "valor_bruto": 120783.53, "valor_bruto_texto_original": null, "emissao": "27/02/2024", "vencimento": "28/03/2024", "status": "paga", "status_display": "pago_nota", "pgto_data": null, "pgto_texto": "11/03/2024 +"}, {"empresa": "Trapisa", "nf": 1040, "orgao": "CRO2 (Rancho)", "fundo": null, "cedida": false, "liquidada": null, "valor_bruto": 56489.1, "valor_bruto_texto_original": null, "emissao": "04/03/2024", "vencimento": "03/04/2024", "status": "paga", "status_display": "paga", "pgto_data": "12/04/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1041, "orgao": "EsPCEx (Hotel)", "fundo": null, "cedida": false, "liquidada": null, "valor_bruto": 22165.72, "valor_bruto_texto_original": null, "emissao": "07/03/2024", "vencimento": "06/04/2024", "status": "paga", "status_display": "paga", "pgto_data": "29/04/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1042, "orgao": "CRO2 (CIAVEX)", "fundo": null, "cedida": false, "liquidada": null, "valor_bruto": 33496.28, "valor_bruto_texto_original": null, "emissao": "07/03/2024", "vencimento": "06/04/2024", "status": "paga", "status_display": "paga", "pgto_data": "12/04/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1045, "orgao": "ITA", "fundo": null, "cedida": false, "liquidada": null, "valor_bruto": 305924.84, "valor_bruto_texto_original": null, "emissao": "08/03/2024", "vencimento": "07/04/2024", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1046, "orgao": "CRO2 (TASA) ", "fundo": null, "cedida": false, "liquidada": null, "valor_bruto": 70867.94, "valor_bruto_texto_original": null, "emissao": "14/03/2024", "vencimento": "13/04/2024", "status": "paga", "status_display": "paga", "pgto_data": "12/04/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1048, "orgao": "CRO2 (CIAVEX)", "fundo": null, "cedida": false, "liquidada": null, "valor_bruto": 116273.85, "valor_bruto_texto_original": null, "emissao": "19/03/2024", "vencimento": "18/04/2024", "status": "paga", "status_display": "paga", "pgto_data": "12/04/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1050, "orgao": "CRO2 (TASA) ", "fundo": "BITGOV", "cedida": true, "liquidada": null, "valor_bruto": 40877.66, "valor_bruto_texto_original": null, "emissao": "01/04/2024", "vencimento": "01/05/2024", "status": "paga", "status_display": "paga", "pgto_data": "24/04/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1051, "orgao": "EsPCEx (Galpão Lonado)", "fundo": "BITGOV", "cedida": true, "liquidada": null, "valor_bruto": 24772.16, "valor_bruto_texto_original": null, "emissao": "02/04/2024", "vencimento": "02/05/2024", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1052, "orgao": "EsPCEx (Hotel)", "fundo": null, "cedida": false, "liquidada": null, "valor_bruto": 31979.75, "valor_bruto_texto_original": null, "emissao": "02/04/2024", "vencimento": "02/05/2024", "status": "paga", "status_display": "paga", "pgto_data": "29/04/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1054, "orgao": "CRO2 (Itu)", "fundo": "BITGOV", "cedida": true, "liquidada": null, "valor_bruto": 225957.77, "valor_bruto_texto_original": null, "emissao": "10/04/2024", "vencimento": "10/05/2024", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1060, "orgao": "CRO2 (Rancho)", "fundo": "BITGOV", "cedida": true, "liquidada": null, "valor_bruto": 204892.97, "valor_bruto_texto_original": null, "emissao": "25/04/2024", "vencimento": "25/05/2024", "status": "paga", "status_display": "pago_nota", "pgto_data": null, "pgto_texto": "23/05/2024 (R$146.310,96) e 19/06/2024 (R$38.443,03)"}, {"empresa": "Trapisa", "nf": 1061, "orgao": "CRO2 (CIAVEX)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 122403.1, "valor_bruto_texto_original": null, "emissao": "02/05/2024", "vencimento": "01/06/2024", "status": "paga", "status_display": "paga", "pgto_data": "19/06/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1062, "orgao": "EsPCEx (Hotel)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 30774.74, "valor_bruto_texto_original": null, "emissao": "03/05/2024", "vencimento": "02/06/2024", "status": "paga", "status_display": "paga", "pgto_data": "23/05/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1063, "orgao": "EsPCEx (Galpão Lonado)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 287967.21, "valor_bruto_texto_original": null, "emissao": "03/05/2024", "vencimento": "02/06/2024", "status": "paga", "status_display": "paga", "pgto_data": "21/06/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1067, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 251529.29, "valor_bruto_texto_original": null, "emissao": "15/05/2024", "vencimento": "14/06/2024", "status": "paga", "status_display": "paga", "pgto_data": "05/07/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1068, "orgao": "CRO2 (TASA)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 117763.32, "valor_bruto_texto_original": null, "emissao": "16/05/2024", "vencimento": "15/06/2024", "status": "paga", "status_display": "pago_nota", "pgto_data": null, "pgto_texto": "08/07/2024 + 12/07/24"}, {"empresa": "Trapisa", "nf": 1069, "orgao": "IGREJA ALFIERO", "fundo": null, "cedida": false, "liquidada": null, "valor_bruto": 180000.0, "valor_bruto_texto_original": null, "emissao": "17/05/2024", "vencimento": "20/05/2024", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1070, "orgao": "ITA", "fundo": "BITGOV", "cedida": true, "liquidada": null, "valor_bruto": 217896.61, "valor_bruto_texto_original": null, "emissao": "22/05/2024", "vencimento": "21/06/2024", "status": "paga", "status_display": "paga", "pgto_data": "12/06/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1072, "orgao": "CRO2 (CIAVEX)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 367762.42, "valor_bruto_texto_original": null, "emissao": "24/05/2024", "vencimento": "23/06/2024", "status": "paga", "status_display": "pago_nota", "pgto_data": null, "pgto_texto": "05/07/2024 + 12/07/24"}, {"empresa": "Trapisa", "nf": 1073, "orgao": "IGREJA ALFIERO", "fundo": "DAYCOVAL", "cedida": true, "liquidada": null, "valor_bruto": 180000.0, "valor_bruto_texto_original": null, "emissao": "31/05/2024", "vencimento": "30/06/2024", "status": "paga", "status_display": "paga", "pgto_data": "30/06/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1074, "orgao": "IGREJA ALFIERO", "fundo": "DAYCOVAL", "cedida": true, "liquidada": null, "valor_bruto": 150000.0, "valor_bruto_texto_original": null, "emissao": "31/05/2024", "vencimento": "30/07/2024", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1075, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 152770.12, "valor_bruto_texto_original": null, "emissao": "06/06/2024", "vencimento": "06/07/2024", "status": "paga", "status_display": "paga", "pgto_data": "12/07/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1076, "orgao": "CRO2 (CIAVEX)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 292449.22, "valor_bruto_texto_original": null, "emissao": "07/06/2024", "vencimento": "22/07/2024", "status": "paga", "status_display": "paga", "pgto_data": "10/07/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1078, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 258081.02, "valor_bruto_texto_original": null, "emissao": "12/06/2024", "vencimento": "13/07/2024", "status": "paga", "status_display": "paga", "pgto_data": "12/07/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1086, "orgao": "ARQUIDIOCESE DE CAMPINAS (IGREJA WILLIAM)", "fundo": null, "cedida": false, "liquidada": null, "valor_bruto": 35841.0, "valor_bruto_texto_original": null, "emissao": "17/06/2024", "vencimento": null, "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1091, "orgao": "CRO2 (SFPC)", "fundo": "BITGOV", "cedida": true, "liquidada": null, "valor_bruto": 34625.94, "valor_bruto_texto_original": null, "emissao": "19/06/2024", "vencimento": "20/07/2024", "status": "paga", "status_display": "paga", "pgto_data": "12/07/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1089, "orgao": "CRO2 (TASA)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 123224.8, "valor_bruto_texto_original": null, "emissao": "19/06/2024", "vencimento": "20/07/2024", "status": "paga", "status_display": "paga", "pgto_data": "12/07/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1092, "orgao": "EsPCEx (Hotel)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 26221.49, "valor_bruto_texto_original": null, "emissao": "05/07/2024", "vencimento": "05/08/2024", "status": "paga", "status_display": "pago_nota", "pgto_data": null, "pgto_texto": "30/09 - R$20.810,90"}, {"empresa": "Trapisa", "nf": 1094, "orgao": "CRO2 (TASA)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 153519.98, "valor_bruto_texto_original": null, "emissao": "19/07/2024", "vencimento": "19/08/2024", "status": "paga", "status_display": "pago_nota", "pgto_data": null, "pgto_texto": "19/08/2024 + 19/09/24"}, {"empresa": "Trapisa", "nf": 1095, "orgao": "CRO2 (CIAVEX)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 139944.9, "valor_bruto_texto_original": null, "emissao": "23/07/2024", "vencimento": "23/08/2024", "status": "paga", "status_display": "pago_nota", "pgto_data": null, "pgto_texto": "19/08/2024 + 19/09/24"}, {"empresa": "Trapisa", "nf": 1097, "orgao": "EsPCEx (Galpão Lonado)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 14663.25, "valor_bruto_texto_original": null, "emissao": "09/08/2024", "vencimento": "09/09/2024", "status": "paga", "status_display": "paga", "pgto_data": "30/09/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1098, "orgao": "CRO2 (TASA)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 171135.8, "valor_bruto_texto_original": null, "emissao": "09/08/2024", "vencimento": "09/09/2024", "status": "paga", "status_display": "paga", "pgto_data": "02/09/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1100, "orgao": "CRO2 (Rancho)", "fundo": "BITGOV", "cedida": true, "liquidada": null, "valor_bruto": 195418.53, "valor_bruto_texto_original": null, "emissao": "14/08/2024", "vencimento": "14/09/2024", "status": "paga", "status_display": "paga", "pgto_data": "14/10/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1101, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 117911.2, "valor_bruto_texto_original": null, "emissao": "14/08/2024", "vencimento": "14/09/2024", "status": "paga", "status_display": "pago_nota", "pgto_data": null, "pgto_texto": "14/10/2024 + 22/10/24"}, {"empresa": "Trapisa", "nf": 1104, "orgao": "CRO2 (CIAVEX)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 350073.76, "valor_bruto_texto_original": null, "emissao": "02/09/2024", "vencimento": "03/10/2024", "status": "paga", "status_display": "paga", "pgto_data": "27/09/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1103, "orgao": "CRO2 (CIAVEX)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 500000.0, "valor_bruto_texto_original": null, "emissao": "02/09/2024", "vencimento": "03/10/2024", "status": "paga", "status_display": "paga", "pgto_data": "27/09/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1109, "orgao": "CRO2 (TASA)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 332205.14, "valor_bruto_texto_original": null, "emissao": "06/09/2024", "vencimento": "07/10/2024", "status": "paga", "status_display": "paga", "pgto_data": "30/09/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1108, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 73437.07, "valor_bruto_texto_original": null, "emissao": "13/09/2024", "vencimento": "14/10/2024", "status": "paga", "status_display": "paga", "pgto_data": "14/10/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1112, "orgao": "EsPCEx (Hotel)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 160063.42, "valor_bruto_texto_original": null, "emissao": "08/10/2024", "vencimento": "08/11/2024", "status": "paga", "status_display": "pago_nota", "pgto_data": null, "pgto_texto": "CONSULTAR EXTRATO TAIPA"}, {"empresa": "Trapisa", "nf": 1114, "orgao": "CRO2 (TASA)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 199803.78, "valor_bruto_texto_original": null, "emissao": "08/10/2024", "vencimento": "08/11/2024", "status": "paga", "status_display": "paga", "pgto_data": "12/11/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1115, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 153953.59, "valor_bruto_texto_original": null, "emissao": "09/10/2024", "vencimento": "09/11/2024", "status": "paga", "status_display": "pago_nota", "pgto_data": null, "pgto_texto": "04/11/2024, SUBSTITUI A NF 1114"}, {"empresa": "Trapisa", "nf": 1117, "orgao": "CRO2 (CIAVEX)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 299301.21, "valor_bruto_texto_original": null, "emissao": "14/10/2024", "vencimento": "14/11/2024", "status": "paga", "status_display": "pago_nota", "pgto_data": null, "pgto_texto": "29/11/2024 + 05/12/2024 - SUSBTITUI A NF 1116"}, {"empresa": "Trapisa", "nf": 1119, "orgao": "EsPCEx (Hotel)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 40808.08, "valor_bruto_texto_original": null, "emissao": "01/11/2024", "vencimento": "02/12/2024", "status": "paga", "status_display": "pago_nota", "pgto_data": null, "pgto_texto": "SUBSTITUI A NF 1105. 1A PARTE PAGA EM 17/12/24"}, {"empresa": "Trapisa", "nf": 1118, "orgao": "EsPCEx (Galpão Lonado)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 270762.31, "valor_bruto_texto_original": null, "emissao": "01/11/2024", "vencimento": "02/12/2024", "status": "paga", "status_display": "paga", "pgto_data": "12/12/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1121, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 288880.23, "valor_bruto_texto_original": null, "emissao": "08/11/2024", "vencimento": "09/12/2024", "status": "paga", "status_display": "pago_nota", "pgto_data": null, "pgto_texto": "05/12/024"}, {"empresa": "Trapisa", "nf": 1120, "orgao": "CRO2 (CIAVEX)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 294302.08, "valor_bruto_texto_original": null, "emissao": "08/11/2024", "vencimento": "09/12/2024", "status": "paga", "status_display": "paga", "pgto_data": "09/12/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1122, "orgao": "UNIMED", "fundo": null, "cedida": false, "liquidada": null, "valor_bruto": 4270.0, "valor_bruto_texto_original": null, "emissao": "11/11/2024", "vencimento": null, "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1123, "orgao": "CRO2 (TASA)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 249950.56, "valor_bruto_texto_original": null, "emissao": "13/11/2024", "vencimento": "14/12/2024", "status": "paga", "status_display": "paga", "pgto_data": "13/12/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1124, "orgao": "UNIMED", "fundo": null, "cedida": false, "liquidada": null, "valor_bruto": 7400.0, "valor_bruto_texto_original": null, "emissao": "29/11/2024", "vencimento": "27/12/2024", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1125, "orgao": "CRO2 (CIAVEX)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 728683.16, "valor_bruto_texto_original": null, "emissao": "05/12/2024", "vencimento": "05/01/2025", "status": "paga", "status_display": "paga", "pgto_data": "20/12/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1127, "orgao": "CRO2 (Campo de Futebol)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 9221.93, "valor_bruto_texto_original": null, "emissao": "06/12/2024", "vencimento": "06/01/2025", "status": "paga", "status_display": "paga", "pgto_data": "26/12/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1126, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 328608.22, "valor_bruto_texto_original": null, "emissao": "06/12/2024", "vencimento": "06/01/2025", "status": "paga", "status_display": "paga", "pgto_data": "17/01/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1129, "orgao": "EsPCEx (Galpão Lonado)", "fundo": "BITGOV", "cedida": true, "liquidada": null, "valor_bruto": 22104.03, "valor_bruto_texto_original": null, "emissao": "09/12/2024", "vencimento": "06/01/2025", "status": "paga", "status_display": "pago_nota", "pgto_data": null, "pgto_texto": "PARCIAL EM 19/12/24"}, {"empresa": "Trapisa", "nf": 1130, "orgao": "EsPCEx (Hotel)", "fundo": "BITGOV", "cedida": true, "liquidada": null, "valor_bruto": 35357.38, "valor_bruto_texto_original": null, "emissao": "09/12/2024", "vencimento": "09/01/2025", "status": "paga", "status_display": "paga", "pgto_data": "26/12/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1131, "orgao": "CRO2 (TASA)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 80901.29, "valor_bruto_texto_original": null, "emissao": "10/12/2024", "vencimento": "09/01/2025", "status": "paga", "status_display": "paga", "pgto_data": "20/12/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1132, "orgao": "CRO2 (TASA)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 319218.92, "valor_bruto_texto_original": null, "emissao": "13/12/2024", "vencimento": "13/01/2025", "status": "paga", "status_display": "paga", "pgto_data": "26/12/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1135, "orgao": "EsPCEx (Hotel)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 2981.46, "valor_bruto_texto_original": " R$             2.981,46", "emissao": "17/12/2024", "vencimento": "17/01/2025", "status": "paga", "status_display": "paga", "pgto_data": "31/12/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1134, "orgao": "EsPCEx (Hotel)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 8921.81, "valor_bruto_texto_original": " R$             8.921,81", "emissao": "17/12/2024", "vencimento": "17/01/2025", "status": "paga", "status_display": "paga", "pgto_data": "31/12/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1136, "orgao": "EsPCEx (Hotel)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 45488.61, "valor_bruto_texto_original": " R$           45.488,61", "emissao": "17/12/2024", "vencimento": "17/01/2025", "status": "paga", "status_display": "paga", "pgto_data": "31/12/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1133, "orgao": "EsPCEx (Hotel)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 53797.1, "valor_bruto_texto_original": " R$           53.797,10", "emissao": "17/12/2024", "vencimento": "17/01/2025", "status": "paga", "status_display": "paga", "pgto_data": "31/12/2024", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1137, "orgao": "PAROQUIA SÃO GUIDO", "fundo": "DAYCOVAL", "cedida": true, "liquidada": null, "valor_bruto": 90000.0, "valor_bruto_texto_original": null, "emissao": "23/12/2024", "vencimento": "25/03/2025", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1141, "orgao": "Missão da Ordem Libanesa Maronita", "fundo": "DAYCOVAL", "cedida": true, "liquidada": null, "valor_bruto": 467640.0, "valor_bruto_texto_original": null, "emissao": "27/12/2024", "vencimento": "25/03/2025", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1142, "orgao": "EsPCEx (Galpão Lonado)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 28888.47, "valor_bruto_texto_original": null, "emissao": "30/12/2024", "vencimento": "30/01/2025", "status": "paga", "status_display": "paga", "pgto_data": "02/01/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1143, "orgao": "EsPCEx (Hotel)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 32281.37, "valor_bruto_texto_original": null, "emissao": "30/12/2024", "vencimento": "30/01/2025", "status": "paga", "status_display": "paga", "pgto_data": "02/01/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1144, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 96885.4, "valor_bruto_texto_original": null, "emissao": "10/01/2025", "vencimento": "10/02/2025", "status": "paga", "status_display": "paga", "pgto_data": "18/03/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1146, "orgao": "CRO2 (TASA)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 47625.02, "valor_bruto_texto_original": null, "emissao": "13/01/2025", "vencimento": "13/02/2025", "status": "paga", "status_display": "paga", "pgto_data": "05/02/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1147, "orgao": "CRO2 (CIAVEX)", "fundo": null, "cedida": false, "liquidada": null, "valor_bruto": 48183.6, "valor_bruto_texto_original": null, "emissao": "16/01/2025", "vencimento": "16/02/2025", "status": "paga", "status_display": "pago_nota", "pgto_data": null, "pgto_texto": "11/02/2025 - junto à NF1154, substitui a NF1145"}, {"empresa": "Trapisa", "nf": 1148, "orgao": "CONTECH", "fundo": null, "cedida": false, "liquidada": null, "valor_bruto": 29400.0, "valor_bruto_texto_original": null, "emissao": "22/01/2025", "vencimento": "22/02/2025", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1149, "orgao": "CRO2 (SFPC)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 96378.97, "valor_bruto_texto_original": null, "emissao": "06/02/2025", "vencimento": "09/03/2025", "status": "paga", "status_display": "paga", "pgto_data": "24/02/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1151, "orgao": "CRO2 (Campo de Futebol)", "fundo": "TAIPA", "cedida": true, "liquidada": "11/02/2025", "valor_bruto": 30939.09, "valor_bruto_texto_original": null, "emissao": "07/02/2025", "vencimento": "10/03/2025", "status": "paga", "status_display": "paga", "pgto_data": "28/03/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1150, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 180424.01, "valor_bruto_texto_original": null, "emissao": "07/02/2025", "vencimento": "10/03/2025", "status": "paga", "status_display": "paga", "pgto_data": "28/03/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1154, "orgao": "CRO2 (CIAVEX)", "fundo": "TRAPISA (DOMICILIO TAIPA)", "cedida": true, "liquidada": null, "valor_bruto": 301180.54, "valor_bruto_texto_original": null, "emissao": "17/02/2025", "vencimento": "20/03/2025", "status": "paga", "status_display": "pago_nota", "pgto_data": null, "pgto_texto": "11/03/2025 - no TAIPA - junto à NF1147, substitui a NF1145"}, {"empresa": "Trapisa", "nf": 1155, "orgao": "CRO2 (CIAVEX)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 73116.26, "valor_bruto_texto_original": null, "emissao": "19/02/2025", "vencimento": "22/03/2025", "status": "paga", "status_display": "paga", "pgto_data": "07/04/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1156, "orgao": "CRO2 (TASA)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 129729.24, "valor_bruto_texto_original": null, "emissao": "19/02/2025", "vencimento": "22/03/2025", "status": "paga", "status_display": "paga", "pgto_data": "07/04/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1160, "orgao": "CRO2 (Rancho)", "fundo": "OTMOW", "cedida": true, "liquidada": null, "valor_bruto": 135872.89, "valor_bruto_texto_original": null, "emissao": "10/03/2025", "vencimento": "10/04/2025", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1164, "orgao": "CRO2 (SFPC)", "fundo": "TRAPISA (DOMICILIO OTMOW)", "cedida": true, "liquidada": null, "valor_bruto": 114310.4, "valor_bruto_texto_original": null, "emissao": "13/03/2025", "vencimento": "13/04/2025", "status": "paga", "status_display": "pago_nota", "pgto_data": null, "pgto_texto": "Nota Fiscal será paga na conta da OTMOW para pagar a NF 1161"}, {"empresa": "Trapisa", "nf": 1165, "orgao": "CRO2 (TASA)", "fundo": "OTMOW", "cedida": true, "liquidada": null, "valor_bruto": 85863.15, "valor_bruto_texto_original": null, "emissao": "14/03/2025", "vencimento": "14/04/2025", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1167, "orgao": "CRO2 (Campo de Futebol)", "fundo": "OTMOW", "cedida": true, "liquidada": "27/03/2025", "valor_bruto": 17152.36, "valor_bruto_texto_original": null, "emissao": "14/03/2025", "vencimento": "14/04/2025", "status": "paga", "status_display": "paga", "pgto_data": "28/05/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1171, "orgao": "CRO2 (TASA)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 113318.93, "valor_bruto_texto_original": null, "emissao": "04/04/2025", "vencimento": "05/05/2025", "status": "paga", "status_display": "pago_nota", "pgto_data": null, "pgto_texto": "PAGO EM"}, {"empresa": "Trapisa", "nf": 1172, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 110366.08, "valor_bruto_texto_original": null, "emissao": "07/04/2025", "vencimento": "08/05/2025", "status": "paga", "status_display": "paga", "pgto_data": "15/05/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1173, "orgao": "CRO2 (CIAVEX)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 217925.37, "valor_bruto_texto_original": null, "emissao": "10/04/2025", "vencimento": "11/05/2025", "status": "paga", "status_display": "pago_nota", "pgto_data": null, "pgto_texto": "PAGO EM 11/06/2025"}, {"empresa": "Trapisa", "nf": 1178, "orgao": "CRO2 (CIAVEX)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 234848.3, "valor_bruto_texto_original": null, "emissao": "02/05/2025", "vencimento": "02/06/2025", "status": "paga", "status_display": "paga", "pgto_data": "11/06/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1180, "orgao": "CRO2 (SFPC)", "fundo": "BITGOV", "cedida": true, "liquidada": null, "valor_bruto": 198185.7, "valor_bruto_texto_original": null, "emissao": "06/05/2025", "vencimento": "06/06/2025", "status": "paga", "status_display": "paga", "pgto_data": "23/05/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1181, "orgao": "CRO2 (Rancho)", "fundo": "BITGOV", "cedida": true, "liquidada": null, "valor_bruto": 149059.33, "valor_bruto_texto_original": null, "emissao": "09/05/2025", "vencimento": "09/06/2025", "status": "paga", "status_display": "paga", "pgto_data": "02/06/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1183, "orgao": "CRO2 (Campo de Futebol)", "fundo": "BITGOV", "cedida": true, "liquidada": null, "valor_bruto": 58201.95, "valor_bruto_texto_original": null, "emissao": "14/05/2025", "vencimento": "14/06/2025", "status": "paga", "status_display": "paga", "pgto_data": "20/06/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1191, "orgao": "CRO2 (CIAVEX)", "fundo": "BITGOV", "cedida": true, "liquidada": null, "valor_bruto": 176282.36, "valor_bruto_texto_original": null, "emissao": "06/06/2025", "vencimento": "07/07/2025", "status": "paga", "status_display": "paga", "pgto_data": "20/06/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1192, "orgao": "CRO2 (Rancho)", "fundo": "BITGOV", "cedida": true, "liquidada": null, "valor_bruto": 148743.22, "valor_bruto_texto_original": null, "emissao": "11/06/2025", "vencimento": "12/07/2025", "status": "paga", "status_display": "pago_nota", "pgto_data": null, "pgto_texto": "25/07/2025 E 07/08/2025"}, {"empresa": "Trapisa", "nf": 1196, "orgao": "CRO2 (TASA)", "fundo": "BITGOV", "cedida": true, "liquidada": "16/07/2025", "valor_bruto": 138348.31, "valor_bruto_texto_original": null, "emissao": "20/06/2025", "vencimento": "21/07/2025", "status": "paga", "status_display": "paga", "pgto_data": "07/08/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1199, "orgao": "CRO2 (SFPC)", "fundo": "BITGOV", "cedida": true, "liquidada": null, "valor_bruto": 88406.41, "valor_bruto_texto_original": null, "emissao": "27/06/2025", "vencimento": "28/07/2025", "status": "paga", "status_display": "paga", "pgto_data": "25/07/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1200, "orgao": "CRO2 (Campo de Futebol)", "fundo": "BITGOV", "cedida": true, "liquidada": "23/07/2025", "valor_bruto": 43850.81, "valor_bruto_texto_original": null, "emissao": "01/07/2025", "vencimento": "01/08/2025", "status": "paga", "status_display": "paga", "pgto_data": "28/01/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1201, "orgao": "CRO2 (TASA)", "fundo": "TAIPA", "cedida": true, "liquidada": "29/07/2025", "valor_bruto": 299110.6, "valor_bruto_texto_original": null, "emissao": "04/07/2025", "vencimento": "04/08/2025", "status": "paga", "status_display": "paga", "pgto_data": "07/08/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1202, "orgao": "CRO2 (CIAVEX)", "fundo": "BITGOV", "cedida": true, "liquidada": "21/07/2025 / 04/08/2025", "valor_bruto": 140000.0, "valor_bruto_texto_original": null, "emissao": "11/07/2025", "vencimento": "11/08/2025", "status": "paga", "status_display": "paga", "pgto_data": "29/08/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1204, "orgao": "CRO2 (TASA)", "fundo": "TRAPISA", "cedida": true, "liquidada": "29/07/2025", "valor_bruto": 80820.88, "valor_bruto_texto_original": null, "emissao": "21/07/2025", "vencimento": "21/08/2025", "status": "paga", "status_display": "paga", "pgto_data": "14/08/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1206, "orgao": "CRO2 (CIAVEX)", "fundo": "BITGOV", "cedida": true, "liquidada": "04/08/2025", "valor_bruto": 226501.8, "valor_bruto_texto_original": null, "emissao": "25/07/2025", "vencimento": "25/08/2025", "status": "paga", "status_display": "paga", "pgto_data": "29/08/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1210, "orgao": "CRO2 (CIAVEX)", "fundo": "DAYCOVAL", "cedida": true, "liquidada": "26/08/2025", "valor_bruto": 168083.99, "valor_bruto_texto_original": null, "emissao": "04/08/2025", "vencimento": "04/09/2025", "status": "paga", "status_display": "paga", "pgto_data": "05/09/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1216, "orgao": "CRO2 (SFPC)", "fundo": "BITGOV", "cedida": true, "liquidada": "15/09/2025", "valor_bruto": 47050.32, "valor_bruto_texto_original": null, "emissao": "29/08/2025", "vencimento": "29/09/2025", "status": "paga", "status_display": "paga", "pgto_data": "22/09/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1219, "orgao": "CRO2 (Rancho)", "fundo": "BITGOV", "cedida": true, "liquidada": "22/09/2025", "valor_bruto": 237081.92, "valor_bruto_texto_original": null, "emissao": "29/08/2025", "vencimento": "29/09/2025", "status": "paga", "status_display": "paga", "pgto_data": "29/09/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1221, "orgao": "CRO2 (Campo de Futebol)", "fundo": "BITGOV", "cedida": true, "liquidada": "24/09/2025", "valor_bruto": 52850.01, "valor_bruto_texto_original": null, "emissao": "09/09/2025", "vencimento": "10/10/2025", "status": "paga", "status_display": "paga", "pgto_data": "31/12/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1223, "orgao": "EsPCEx (Galpão Lonado)", "fundo": "DAYCOVAL", "cedida": true, "liquidada": "11/09/2025", "valor_bruto": 20456.19, "valor_bruto_texto_original": null, "emissao": "10/09/2025", "vencimento": "11/10/2025", "status": "paga", "status_display": "pago_nota", "pgto_data": null, "pgto_texto": "17/09/2025 E 18/09/2025"}, {"empresa": "Trapisa", "nf": 1224, "orgao": "EsPCEx (Galpão Lonado)", "fundo": "DAYCOVAL", "cedida": true, "liquidada": "11/09/2025", "valor_bruto": 46345.45, "valor_bruto_texto_original": null, "emissao": "10/09/2025", "vencimento": "11/10/2025", "status": "paga", "status_display": "pago_nota", "pgto_data": null, "pgto_texto": "17/09/2025 E 18/09/2025"}, {"empresa": "Trapisa", "nf": 1225, "orgao": "EsPCEx (Galpão Lonado)", "fundo": "DAYCOVAL", "cedida": true, "liquidada": "16/09/2025", "valor_bruto": 18061.42, "valor_bruto_texto_original": null, "emissao": "10/09/2025", "vencimento": "11/10/2025", "status": "paga", "status_display": "paga", "pgto_data": "17/09/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1222, "orgao": "CRO2 (CIAVEX)", "fundo": "TAIPA", "cedida": true, "liquidada": "25/09/2025", "valor_bruto": 233430.48, "valor_bruto_texto_original": null, "emissao": "10/09/2025", "vencimento": "11/10/2025", "status": "paga", "status_display": "paga", "pgto_data": "03/10/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1226, "orgao": "CRO2 (Rancho)", "fundo": "DAYCOVAL", "cedida": true, "liquidada": "15/10/2025", "valor_bruto": 198735.17, "valor_bruto_texto_original": null, "emissao": "02/10/2025", "vencimento": "02/11/2025", "status": "paga", "status_display": "paga", "pgto_data": "27/10/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1227, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": "15/10/2025", "valor_bruto": 385036.69, "valor_bruto_texto_original": null, "emissao": "06/10/2025", "vencimento": "06/11/2025", "status": "paga", "status_display": "paga", "pgto_data": "27/10/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1230, "orgao": "DPR", "fundo": "CREDCAMP", "cedida": true, "liquidada": null, "valor_bruto": 267855.0, "valor_bruto_texto_original": null, "emissao": "15/10/2025", "vencimento": "15/11/2025", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1229, "orgao": "CRO2 (SFPC)", "fundo": "DAYCOVAL", "cedida": true, "liquidada": "23/10/2025", "valor_bruto": 116055.93, "valor_bruto_texto_original": null, "emissao": "16/10/2025", "vencimento": "16/11/2025", "status": "paga", "status_display": "paga", "pgto_data": "31/10/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1232, "orgao": "CRO2 (CIAVEX)", "fundo": "DAYCOVAL", "cedida": true, "liquidada": "28/11/2025", "valor_bruto": 156930.43, "valor_bruto_texto_original": null, "emissao": "27/10/2025", "vencimento": "27/11/2025", "status": "paga", "status_display": "paga", "pgto_data": "09/12/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1233, "orgao": "CRO2 (TASA)", "fundo": "DAYCOVAL", "cedida": true, "liquidada": "28/11/2025", "valor_bruto": 58825.02, "valor_bruto_texto_original": null, "emissao": "27/10/2025", "vencimento": "27/11/2025", "status": "paga", "status_display": "paga", "pgto_data": "15/12/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1234, "orgao": "CRO2 (CIAVEX)", "fundo": "DAYCOVAL", "cedida": true, "liquidada": "11/11/2025", "valor_bruto": 395084.84, "valor_bruto_texto_original": null, "emissao": "30/10/2025", "vencimento": "30/11/2025", "status": "paga", "status_display": "paga", "pgto_data": "19/11/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1235, "orgao": "CRO2 (TASA)", "fundo": "DAYCOVAL", "cedida": true, "liquidada": "10/11/2025", "valor_bruto": 622084.48, "valor_bruto_texto_original": null, "emissao": "30/10/2025", "vencimento": "29/11/2025", "status": "paga", "status_display": "paga", "pgto_data": "14/11/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1236, "orgao": "CRO2 (Campo de Futebol)", "fundo": "TRAPISA (DOMICILIO BITGOV)", "cedida": true, "liquidada": "04/12/2025", "valor_bruto": 31066.27, "valor_bruto_texto_original": null, "emissao": "31/10/2025", "vencimento": "30/11/2025", "status": "paga", "status_display": "paga", "pgto_data": "28/01/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1239, "orgao": "CRO2 (CIAVEX)", "fundo": "DAYCOVAL", "cedida": true, "liquidada": "17/11/2025", "valor_bruto": 169203.04, "valor_bruto_texto_original": null, "emissao": "13/11/2025", "vencimento": "13/12/2025", "status": "paga", "status_display": "paga", "pgto_data": "02/12/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1240, "orgao": "CRO2 (Rancho)", "fundo": "DAYCOVAL", "cedida": true, "liquidada": null, "valor_bruto": 547954.0, "valor_bruto_texto_original": null, "emissao": "17/11/2025", "vencimento": "17/12/2025", "status": "paga", "status_display": "paga", "pgto_data": "09/12/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1242, "orgao": "CRO2 (CIAVEX)", "fundo": "TRAPISA (DOMICILIO VORTX)", "cedida": true, "liquidada": "28/11/2025", "valor_bruto": 52778.93, "valor_bruto_texto_original": null, "emissao": "18/11/2025", "vencimento": "18/12/2025", "status": "paga", "status_display": "paga", "pgto_data": "22/12/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1243, "orgao": "CRO2 (Rancho)", "fundo": "TRAPISA (DOMICILIO VORTX)", "cedida": true, "liquidada": "02/12/2025", "valor_bruto": 417339.1, "valor_bruto_texto_original": null, "emissao": "18/11/2025", "vencimento": "18/12/2025", "status": "paga", "status_display": "paga", "pgto_data": "22/12/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1244, "orgao": "CRO2 (CIAVEX)", "fundo": "DAYCOVAL", "cedida": true, "liquidada": "16/12/2025", "valor_bruto": 232592.7, "valor_bruto_texto_original": null, "emissao": "28/11/2025", "vencimento": "28/12/2025", "status": "paga", "status_display": "pago_nota", "pgto_data": null, "pgto_texto": "???"}, {"empresa": "Trapisa", "nf": 1247, "orgao": "CRO2 (CIAVEX)", "fundo": "TAIPA", "cedida": true, "liquidada": "16/12/2025", "valor_bruto": 126419.26, "valor_bruto_texto_original": null, "emissao": "01/12/2025", "vencimento": "31/12/2025", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1249, "orgao": "CRO2 (TASA)", "fundo": "TAIPA", "cedida": true, "liquidada": "05/12/2025", "valor_bruto": 40799.98, "valor_bruto_texto_original": null, "emissao": "02/12/2025", "vencimento": "01/01/2026", "status": "paga", "status_display": "paga", "pgto_data": "15/12/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1251, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": "19/12/2025", "valor_bruto": 406440.45, "valor_bruto_texto_original": null, "emissao": "15/12/2025", "vencimento": "14/01/2026", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1252, "orgao": "CRO2 (TASA)", "fundo": "DAYCOVAL", "cedida": true, "liquidada": "23/12/2025", "valor_bruto": 29122.11, "valor_bruto_texto_original": null, "emissao": "17/12/2025", "vencimento": "16/01/2026", "status": "paga", "status_display": "paga", "pgto_data": "31/12/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1253, "orgao": "CRO2 (CIAVEX)", "fundo": "DAYCOVAL", "cedida": true, "liquidada": "23/12/2025", "valor_bruto": 145588.79, "valor_bruto_texto_original": null, "emissao": "17/12/2025", "vencimento": "16/01/2026", "status": "paga", "status_display": "paga", "pgto_data": "31/12/2025", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1254, "orgao": "CRO2 (Rancho)", "fundo": "DAYCOVAL", "cedida": true, "liquidada": "12/01/2026", "valor_bruto": 242801.56, "valor_bruto_texto_original": null, "emissao": "18/12/2025", "vencimento": "17/01/2026", "status": "paga", "status_display": "paga", "pgto_data": "27/01/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1255, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": "21/01/2026", "valor_bruto": 189603.87, "valor_bruto_texto_original": null, "emissao": "06/01/2026", "vencimento": "05/02/2026", "status": "paga", "status_display": "paga", "pgto_data": "09/02/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1256, "orgao": "CRO2 (SFPC)", "fundo": "TAIPA", "cedida": true, "liquidada": "22/01/2026", "valor_bruto": 206667.34, "valor_bruto_texto_original": null, "emissao": "08/01/2026", "vencimento": "07/02/2026", "status": "paga", "status_display": "paga", "pgto_data": "09/02/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1257, "orgao": "CRO2 (CIAVEX)", "fundo": "DAYCOVAL", "cedida": true, "liquidada": "28/01/2026", "valor_bruto": 237466.26, "valor_bruto_texto_original": null, "emissao": "16/01/2026", "vencimento": "15/02/2026", "status": "paga", "status_display": "paga", "pgto_data": "09/02/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1258, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": "06/02/2026", "valor_bruto": 366986.07, "valor_bruto_texto_original": null, "emissao": "20/01/2026", "vencimento": "19/02/2026", "status": "paga", "status_display": "paga", "pgto_data": "13/02/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1259, "orgao": "CRO2 (CIAVEX)", "fundo": "TAIPA", "cedida": true, "liquidada": "12/02/2026", "valor_bruto": 175482.32, "valor_bruto_texto_original": null, "emissao": "30/01/2026", "vencimento": "01/03/2026", "status": "paga", "status_display": "paga", "pgto_data": "25/02/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1260, "orgao": "CRO2 (TASA)", "fundo": "TAIPA", "cedida": true, "liquidada": "06/02/2026", "valor_bruto": 86425.68, "valor_bruto_texto_original": null, "emissao": "02/02/2026", "vencimento": "04/03/2026", "status": "paga", "status_display": "paga", "pgto_data": "13/02/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1261, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": "20/02/2026", "valor_bruto": 355024.85, "valor_bruto_texto_original": null, "emissao": "06/02/2026", "vencimento": "08/03/2026", "status": "paga", "status_display": "paga", "pgto_data": "27/02/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1262, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": "12/03/2026", "valor_bruto": 361140.05, "valor_bruto_texto_original": null, "emissao": "20/02/2026", "vencimento": "22/03/2026", "status": "paga", "status_display": "paga", "pgto_data": "20/03/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1263, "orgao": "CRO2 (CIAVEX)", "fundo": "TAIPA", "cedida": true, "liquidada": "12/03/2026", "valor_bruto": 282561.38, "valor_bruto_texto_original": null, "emissao": "25/02/2026", "vencimento": "27/03/2026", "status": "paga", "status_display": "paga", "pgto_data": "20/03/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1265, "orgao": "CRO2 (SFPC)", "fundo": "TAIPA", "cedida": true, "liquidada": "25/03/2026", "valor_bruto": 74106.29, "valor_bruto_texto_original": null, "emissao": "04/03/2026", "vencimento": "03/04/2026", "status": "paga", "status_display": "paga", "pgto_data": "09/04/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1266, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": "25/03/2026", "valor_bruto": 223448.25, "valor_bruto_texto_original": null, "emissao": "13/03/2026", "vencimento": "12/04/2026", "status": "paga", "status_display": "paga", "pgto_data": "09/04/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1277, "orgao": "CRO2 (CIAVEX)", "fundo": "TAIPA", "cedida": true, "liquidada": "10/04/2026", "valor_bruto": 341893.5, "valor_bruto_texto_original": null, "emissao": "24/03/2026", "vencimento": "23/04/2026", "status": "paga", "status_display": "paga", "pgto_data": "14/04/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1278, "orgao": "CRO2 (TASA)", "fundo": "TAIPA", "cedida": true, "liquidada": "10/04/2026", "valor_bruto": 131822.37, "valor_bruto_texto_original": null, "emissao": "25/03/2026", "vencimento": "24/04/2026", "status": "paga", "status_display": "paga", "pgto_data": "14/04/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1285, "orgao": "CRO2 (CIAVEX)", "fundo": "TAIPA", "cedida": true, "liquidada": "27/04/2026", "valor_bruto": 342688.86, "valor_bruto_texto_original": null, "emissao": "08/04/2026", "vencimento": "08/05/2026", "status": "paga", "status_display": "paga", "pgto_data": "04/05/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1286, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": "05/05/2026", "valor_bruto": 140209.2, "valor_bruto_texto_original": null, "emissao": "14/04/2026", "vencimento": "14/05/2026", "status": "paga", "status_display": "paga", "pgto_data": "11/05/2026", "pgto_texto": null}, {"empresa": "LD", "nf": 120, "orgao": "CRO2 (CIOU)", "fundo": "TAIPA", "cedida": true, "liquidada": "07/05/2026", "valor_bruto": 193909.17, "valor_bruto_texto_original": null, "emissao": "17/04/2026", "vencimento": "17/05/2026", "status": "paga", "status_display": "paga", "pgto_data": "13/05/2026", "pgto_texto": null}, {"empresa": "LD", "nf": 121, "orgao": "CRO2 (CIOU)", "fundo": "TAIPA", "cedida": true, "liquidada": "13/05/2026", "valor_bruto": 122489.3, "valor_bruto_texto_original": null, "emissao": "04/05/2026", "vencimento": "03/06/2026", "status": "paga", "status_display": "paga", "pgto_data": "20/05/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1287, "orgao": "CRO2 (CIAVEX)", "fundo": "TAIPA", "cedida": true, "liquidada": "13/05/2026", "valor_bruto": 222009.14, "valor_bruto_texto_original": null, "emissao": "04/05/2026", "vencimento": "03/06/2026", "status": "paga", "status_display": "paga", "pgto_data": "20/05/2026", "pgto_texto": null}, {"empresa": "LD", "nf": 122, "orgao": "CRO2 (CIOU)", "fundo": "TAIPA", "cedida": true, "liquidada": "08/06/2026", "valor_bruto": 127265.24, "valor_bruto_texto_original": null, "emissao": "07/05/2026", "vencimento": "06/06/2026", "status": "paga", "status_display": "paga", "pgto_data": "12/06/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1289, "orgao": "CRO2 (SFPC)", "fundo": "TAIPA", "cedida": true, "liquidada": "22/05/2026", "valor_bruto": 80645.81, "valor_bruto_texto_original": null, "emissao": "14/05/2026", "vencimento": "13/06/2026", "status": "paga", "status_display": "paga", "pgto_data": "29/05/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1290, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": "09/06/2026", "valor_bruto": 286926.83, "valor_bruto_texto_original": null, "emissao": "14/05/2026", "vencimento": "13/06/2026", "status": "paga", "status_display": "paga", "pgto_data": "12/06/2026", "pgto_texto": null}, {"empresa": "LD", "nf": 124, "orgao": "CRO2 (CIOU)", "fundo": "TAIPA", "cedida": true, "liquidada": "01/06/2026", "valor_bruto": 92602.06, "valor_bruto_texto_original": null, "emissao": "20/05/2026", "vencimento": "19/06/2026", "status": "paga", "status_display": "paga", "pgto_data": "03/06/2026", "pgto_texto": null}, {"empresa": "LD", "nf": 125, "orgao": "CRO2 (CIOU)", "fundo": "TAIPA", "cedida": true, "liquidada": "12/06/2026", "valor_bruto": 218521.05, "valor_bruto_texto_original": null, "emissao": "27/05/2026", "vencimento": "26/06/2026", "status": "paga", "status_display": "paga", "pgto_data": "16/06/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1291, "orgao": "CRO2 (CIAVEX)", "fundo": "TAIPA", "cedida": true, "liquidada": "12/06/2026", "valor_bruto": 356149.06, "valor_bruto_texto_original": null, "emissao": "27/05/2026", "vencimento": "26/06/2026", "status": "paga", "status_display": "paga", "pgto_data": "07/07/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1292, "orgao": "CRO2 (TASA)", "fundo": "TAIPA", "cedida": true, "liquidada": "11/06/2026", "valor_bruto": 199883.89, "valor_bruto_texto_original": null, "emissao": "29/05/2026", "vencimento": "28/06/2026", "status": "paga", "status_display": "paga", "pgto_data": "07/07/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1293, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": "06/07/2026", "valor_bruto": 283382.48, "valor_bruto_texto_original": null, "emissao": "05/06/2026", "vencimento": "05/07/2026", "status": "paga", "status_display": "paga", "pgto_data": "10/07/2026", "pgto_texto": null}, {"empresa": "LD", "nf": 126, "orgao": "CRO2 (CIOU)", "fundo": "TAIPA", "cedida": true, "liquidada": "25/06/2026", "valor_bruto": 226896.82, "valor_bruto_texto_original": null, "emissao": "11/06/2026", "vencimento": "11/07/2026", "status": "paga", "status_display": "paga", "pgto_data": "07/07/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1294, "orgao": "CRO2 (CIAVEX)", "fundo": "TAIPA", "cedida": true, "liquidada": "24/06/2026", "valor_bruto": 210691.98, "valor_bruto_texto_original": null, "emissao": "12/06/2026", "vencimento": "12/07/2026", "status": "paga", "status_display": "paga", "pgto_data": "07/07/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1295, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": "13/07/2026", "valor_bruto": 281934.3, "valor_bruto_texto_original": null, "emissao": "19/06/2026", "vencimento": "19/07/2026", "status": "paga", "status_display": "paga", "pgto_data": "17/07/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1297, "orgao": "CRO2 (TASA)", "fundo": "TAIPA", "cedida": true, "liquidada": "16/07/2026", "valor_bruto": 140574.33, "valor_bruto_texto_original": null, "emissao": "26/06/2026", "vencimento": "26/07/2026", "status": "paga", "status_display": "paga", "pgto_data": "24/07/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1298, "orgao": "CRO2 (TASA)", "fundo": "BITGOV", "cedida": true, "liquidada": "16/07/2026", "valor_bruto": 10380.54, "valor_bruto_texto_original": null, "emissao": "26/06/2026", "vencimento": "26/07/2026", "status": "paga", "status_display": "paga", "pgto_data": "24/07/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1299, "orgao": "CRO2 (SFPC)", "fundo": "TAIPA", "cedida": true, "liquidada": "20/07/2026", "valor_bruto": 89584.89, "valor_bruto_texto_original": null, "emissao": "02/07/2026", "vencimento": "01/08/2026", "status": "paga", "status_display": "paga", "pgto_data": "24/07/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1302, "orgao": "CRO2 (TASA)", "fundo": "TAIPA", "cedida": true, "liquidada": "20/07/2026", "valor_bruto": 290701.28, "valor_bruto_texto_original": null, "emissao": "08/07/2026", "vencimento": "07/08/2026", "status": "paga", "status_display": "paga", "pgto_data": "30/07/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1301, "orgao": "CRO2 (TASA)", "fundo": "BITGOV", "cedida": true, "liquidada": "20/07/2026", "valor_bruto": 10898.1, "valor_bruto_texto_original": null, "emissao": "08/07/2026", "vencimento": "07/08/2026", "status": "paga", "status_display": "paga", "pgto_data": "30/07/2026", "pgto_texto": null}, {"empresa": "LD", "nf": 127, "orgao": "CRO2 (CIOU)", "fundo": "TAIPA", "cedida": true, "liquidada": "05/08/2026", "valor_bruto": 126533.62, "valor_bruto_texto_original": null, "emissao": "15/07/2026", "vencimento": "14/08/2026", "status": "paga", "status_display": "paga", "pgto_data": "19/08/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1303, "orgao": "CRO2 (CIAVEX)", "fundo": "TAIPA", "cedida": true, "liquidada": "04/08/2026", "valor_bruto": 335773.41, "valor_bruto_texto_original": null, "emissao": "21/07/2026", "vencimento": "20/08/2026", "status": "paga", "status_display": "paga", "pgto_data": "19/08/2026", "pgto_texto": null}, {"empresa": "LD", "nf": 128, "orgao": "CRO2 (CIOU)", "fundo": "TAIPA", "cedida": true, "liquidada": "05/08/2026", "valor_bruto": 65562.79, "valor_bruto_texto_original": null, "emissao": "23/07/2026", "vencimento": "22/08/2026", "status": "paga", "status_display": "paga", "pgto_data": "19/08/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1304, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": "17/08/2026", "valor_bruto": 259204.97, "valor_bruto_texto_original": null, "emissao": "24/07/2026", "vencimento": "23/08/2026", "status": "paga", "status_display": "paga", "pgto_data": "24/08/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1305, "orgao": "CRO2 (CIAVEX)", "fundo": "TAIPA", "cedida": true, "liquidada": "06/08/2026", "valor_bruto": 338338.26, "valor_bruto_texto_original": null, "emissao": "29/07/2026", "vencimento": "28/08/2026", "status": "paga", "status_display": "paga", "pgto_data": "19/08/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1306, "orgao": "CRO2 (SFPC)", "fundo": "TAIPA", "cedida": true, "liquidada": "12/08/2026", "valor_bruto": 70371.72, "valor_bruto_texto_original": null, "emissao": "03/08/2026", "vencimento": "02/09/2026", "status": "paga", "status_display": "paga", "pgto_data": "19/08/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1307, "orgao": "CRO2 (RANCHO)", "fundo": "TAIPA", "cedida": true, "liquidada": "18/08/2026", "valor_bruto": 129361.95, "valor_bruto_texto_original": null, "emissao": "07/08/2026", "vencimento": "06/09/2026", "status": "paga", "status_display": "paga", "pgto_data": "24/08/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1308, "orgao": "CRO2 (CIAVEX)", "fundo": "TAIPA", "cedida": true, "liquidada": "26/08/2026", "valor_bruto": 162917.72, "valor_bruto_texto_original": null, "emissao": "14/08/2026", "vencimento": "13/09/2026", "status": "paga", "status_display": "paga", "pgto_data": "03/09/2026", "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1309, "orgao": "CRO2 (SFPC)", "fundo": "TAIPA", "cedida": true, "liquidada": "02/09/2026", "valor_bruto": 126634.3, "valor_bruto_texto_original": null, "emissao": "20/08/2026", "vencimento": "19/09/2026", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1311, "orgao": "CRO2 (RANCHO)", "fundo": "TAIPA", "cedida": true, "liquidada": "09/09/2026", "valor_bruto": 119681.54, "valor_bruto_texto_original": null, "emissao": "21/08/2026", "vencimento": "20/09/2026", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1310, "orgao": "CRO2 (RANCHO)", "fundo": "BITGOV", "cedida": true, "liquidada": "09/09/2026", "valor_bruto": 9227.08, "valor_bruto_texto_original": null, "emissao": "21/08/2026", "vencimento": "20/09/2026", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "LD", "nf": 130, "orgao": "CRO2 (CIOU)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 98956.16, "valor_bruto_texto_original": null, "emissao": "28/08/2026", "vencimento": "27/09/2026", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1313, "orgao": "CRO2 (TASA)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 140530.73, "valor_bruto_texto_original": null, "emissao": "03/09/2026", "vencimento": "03/10/2026", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1316, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 226492.59, "valor_bruto_texto_original": null, "emissao": "04/09/2026", "vencimento": "04/10/2026", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1317, "orgao": "CRO2 (CIAVEX)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 133428.83, "valor_bruto_texto_original": null, "emissao": "08/09/2026", "vencimento": "08/10/2026", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1318, "orgao": "CRO2 (Rancho)", "fundo": "BITGOV", "cedida": true, "liquidada": null, "valor_bruto": 8349.25, "valor_bruto_texto_original": null, "emissao": "11/09/2026", "vencimento": "11/10/2026", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1319, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 183613.57, "valor_bruto_texto_original": null, "emissao": "11/09/2026", "vencimento": "11/10/2026", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1320, "orgao": "CRO2 (SFPC)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 23121.42, "valor_bruto_texto_original": null, "emissao": "11/09/2026", "vencimento": "11/10/2026", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}, {"empresa": "Trapisa", "nf": 1322, "orgao": "CRO2 (Rancho)", "fundo": "TAIPA", "cedida": true, "liquidada": null, "valor_bruto": 340455.69, "valor_bruto_texto_original": null, "emissao": "14/09/2026", "vencimento": "14/10/2026", "status": "aberto", "status_display": "aberto", "pgto_data": null, "pgto_texto": null}];</script>
+<script>const RENDER_JS_SRC = "\nfunction fmtMoney(v){\n  return v.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});\n}\n\nfunction populateFundos(){\n  const sel = document.getElementById('f-fundo');\n  const current = sel.value;\n  sel.innerHTML = '<option value=\"todos\">Todos</option>';\n  const fundos = [...new Set(window.NOTAS.filter(n=>n.cedida).map(n=>n.fundo))].sort();\n  fundos.forEach(f=>{\n    const opt = document.createElement('option');\n    opt.value = f; opt.textContent = f;\n    sel.appendChild(opt);\n  });\n  if(fundos.includes(current)) sel.value = current;\n}\n\nfunction getFiltered(){\n  const empresa = document.getElementById('f-empresa').value;\n  const fundo = document.getElementById('f-fundo').value;\n  const status = document.getElementById('f-status').value;\n\n  return window.NOTAS.filter(n=>{\n    if(!n.cedida) return false;\n    if(empresa !== 'todas' && n.empresa !== empresa) return false;\n    if(fundo !== 'todos' && n.fundo !== fundo) return false;\n    if(status !== 'todas' && n.status !== status) return false;\n    return true;\n  });\n}\n\nfunction statusBadge(n){\n  if(n.status_display === 'pago_nota'){\n    const title = (n.pgto_texto || '').replace(/\"/g,'&quot;');\n    return '<span class=\"badge pago_nota\" title=\"'+title+'\">Pago (nota)</span>';\n  }\n  if(n.status === 'paga') return '<span class=\"badge paga\">Paga</span>';\n  return '<span class=\"badge aberto\">Em aberto</span>';\n}\n\nfunction render(){\n  const filtered = getFiltered();\n\n  const total = filtered.reduce((s,n)=>s + (n.valor_bruto||0), 0);\n  const fundosSet = new Set(filtered.map(n=>n.fundo));\n  document.getElementById('c-total').textContent = fmtMoney(total);\n  document.getElementById('c-count').textContent = filtered.length;\n  document.getElementById('c-funds').textContent = fundosSet.size;\n\n  const byFundEmpresa = {};\n  filtered.forEach(n=>{\n    byFundEmpresa[n.fundo] = byFundEmpresa[n.fundo] || {};\n    byFundEmpresa[n.fundo][n.empresa] = byFundEmpresa[n.fundo][n.empresa] || {count:0, total:0};\n    byFundEmpresa[n.fundo][n.empresa].count++;\n    byFundEmpresa[n.fundo][n.empresa].total += (n.valor_bruto||0);\n  });\n\n  const fundosOrdenados = Object.keys(byFundEmpresa).sort();\n  let rowsHtml = '';\n  let grandTotal = 0, grandCount = 0;\n\n  if(fundosOrdenados.length === 0){\n    rowsHtml = '<tr><td colspan=\"4\" class=\"empty-state\">Nenhuma nota encontrada para este filtro.</td></tr>';\n  } else {\n    fundosOrdenados.forEach(fundo=>{\n      const empresas = byFundEmpresa[fundo];\n      let subtotal = 0, subcount = 0;\n      const empresasOrdenadas = Object.keys(empresas).sort();\n      empresasOrdenadas.forEach((emp, idx)=>{\n        const d = empresas[emp];\n        subtotal += d.total; subcount += d.count;\n        rowsHtml += '<tr>'+\n          '<td>'+(idx===0 ? fundo : '')+'</td>'+\n          '<td>'+emp+'</td>'+\n          '<td class=\"right mono\">'+d.count+'</td>'+\n          '<td class=\"right mono\">'+fmtMoney(d.total)+'</td>'+\n        '</tr>';\n      });\n      if(empresasOrdenadas.length > 1){\n        rowsHtml += '<tr class=\"subtotal-row\">'+\n          '<td colspan=\"2\">Subtotal \u2014 '+fundo+'</td>'+\n          '<td class=\"right mono\">'+subcount+'</td>'+\n          '<td class=\"right mono\">'+fmtMoney(subtotal)+'</td>'+\n        '</tr>';\n      }\n      grandTotal += subtotal; grandCount += subcount;\n    });\n    rowsHtml += '<tr class=\"grand-total\">'+\n      '<td colspan=\"2\">Total geral</td>'+\n      '<td class=\"right mono\">'+grandCount+'</td>'+\n      '<td class=\"right mono\">'+fmtMoney(grandTotal)+'</td>'+\n    '</tr>';\n  }\n  document.getElementById('tbl-fundos-body').innerHTML = rowsHtml;\n\n  const sorted = [...filtered].sort((a,b)=> (a.fundo||'').localeCompare(b.fundo||'') || a.nf - b.nf);\n  let detHtml = '';\n  if(sorted.length === 0){\n    detHtml = '<tr><td colspan=\"9\" class=\"empty-state\">Nenhuma nota encontrada para este filtro.</td></tr>';\n  } else {\n    sorted.forEach(n=>{\n      detHtml += '<tr>'+\n        '<td class=\"mono\">'+n.nf+'</td>'+\n        '<td>'+n.empresa+'</td>'+\n        '<td>'+(n.fundo || '')+'</td>'+\n        '<td>'+(n.orgao || '')+'</td>'+\n        '<td>'+statusBadge(n)+'</td>'+\n        '<td>'+(n.liquidada || '\u2014')+'</td>'+\n        '<td>'+(n.emissao || '\u2014')+'</td>'+\n        '<td>'+(n.vencimento || '\u2014')+'</td>'+\n        '<td class=\"right mono\">'+fmtMoney(n.valor_bruto||0)+'</td>'+\n      '</tr>';\n    });\n  }\n  document.getElementById('tbl-detalhe-body').innerHTML = detHtml;\n}\n\n['f-empresa','f-fundo','f-status'].forEach(id=>{\n  document.getElementById(id).addEventListener('change', render);\n});\n\npopulateFundos();\nrender();\n";</script>
+<script>
+function fmtMoney(v){
+  return v.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+}
+
+function populateFundos(){
+  const sel = document.getElementById('f-fundo');
+  const current = sel.value;
+  sel.innerHTML = '<option value="todos">Todos</option>';
+  const fundos = [...new Set(window.NOTAS.filter(n=>n.cedida).map(n=>n.fundo))].sort();
+  fundos.forEach(f=>{
+    const opt = document.createElement('option');
+    opt.value = f; opt.textContent = f;
+    sel.appendChild(opt);
+  });
+  if(fundos.includes(current)) sel.value = current;
+}
+
+function getFiltered(){
+  const empresa = document.getElementById('f-empresa').value;
+  const fundo = document.getElementById('f-fundo').value;
+  const status = document.getElementById('f-status').value;
+
+  return window.NOTAS.filter(n=>{
+    if(!n.cedida) return false;
+    if(empresa !== 'todas' && n.empresa !== empresa) return false;
+    if(fundo !== 'todos' && n.fundo !== fundo) return false;
+    if(status !== 'todas' && n.status !== status) return false;
+    return true;
+  });
+}
+
+function statusBadge(n){
+  if(n.status_display === 'pago_nota'){
+    const title = (n.pgto_texto || '').replace(/"/g,'&quot;');
+    return '<span class="badge pago_nota" title="'+title+'">Pago (nota)</span>';
+  }
+  if(n.status === 'paga') return '<span class="badge paga">Paga</span>';
+  return '<span class="badge aberto">Em aberto</span>';
+}
+
+function render(){
+  const filtered = getFiltered();
+
+  const total = filtered.reduce((s,n)=>s + (n.valor_bruto||0), 0);
+  const fundosSet = new Set(filtered.map(n=>n.fundo));
+  document.getElementById('c-total').textContent = fmtMoney(total);
+  document.getElementById('c-count').textContent = filtered.length;
+  document.getElementById('c-funds').textContent = fundosSet.size;
+
+  const byFundEmpresa = {};
+  filtered.forEach(n=>{
+    byFundEmpresa[n.fundo] = byFundEmpresa[n.fundo] || {};
+    byFundEmpresa[n.fundo][n.empresa] = byFundEmpresa[n.fundo][n.empresa] || {count:0, total:0};
+    byFundEmpresa[n.fundo][n.empresa].count++;
+    byFundEmpresa[n.fundo][n.empresa].total += (n.valor_bruto||0);
+  });
+
+  const fundosOrdenados = Object.keys(byFundEmpresa).sort();
+  let rowsHtml = '';
+  let grandTotal = 0, grandCount = 0;
+
+  if(fundosOrdenados.length === 0){
+    rowsHtml = '<tr><td colspan="4" class="empty-state">Nenhuma nota encontrada para este filtro.</td></tr>';
+  } else {
+    fundosOrdenados.forEach(fundo=>{
+      const empresas = byFundEmpresa[fundo];
+      let subtotal = 0, subcount = 0;
+      const empresasOrdenadas = Object.keys(empresas).sort();
+      empresasOrdenadas.forEach((emp, idx)=>{
+        const d = empresas[emp];
+        subtotal += d.total; subcount += d.count;
+        rowsHtml += '<tr>'+
+          '<td>'+(idx===0 ? fundo : '')+'</td>'+
+          '<td>'+emp+'</td>'+
+          '<td class="right mono">'+d.count+'</td>'+
+          '<td class="right mono">'+fmtMoney(d.total)+'</td>'+
+        '</tr>';
+      });
+      if(empresasOrdenadas.length > 1){
+        rowsHtml += '<tr class="subtotal-row">'+
+          '<td colspan="2">Subtotal — '+fundo+'</td>'+
+          '<td class="right mono">'+subcount+'</td>'+
+          '<td class="right mono">'+fmtMoney(subtotal)+'</td>'+
+        '</tr>';
+      }
+      grandTotal += subtotal; grandCount += subcount;
+    });
+    rowsHtml += '<tr class="grand-total">'+
+      '<td colspan="2">Total geral</td>'+
+      '<td class="right mono">'+grandCount+'</td>'+
+      '<td class="right mono">'+fmtMoney(grandTotal)+'</td>'+
+    '</tr>';
+  }
+  document.getElementById('tbl-fundos-body').innerHTML = rowsHtml;
+
+  const sorted = [...filtered].sort((a,b)=> (a.fundo||'').localeCompare(b.fundo||'') || a.nf - b.nf);
+  let detHtml = '';
+  if(sorted.length === 0){
+    detHtml = '<tr><td colspan="9" class="empty-state">Nenhuma nota encontrada para este filtro.</td></tr>';
+  } else {
+    sorted.forEach(n=>{
+      detHtml += '<tr>'+
+        '<td class="mono">'+n.nf+'</td>'+
+        '<td>'+n.empresa+'</td>'+
+        '<td>'+(n.fundo || '')+'</td>'+
+        '<td>'+(n.orgao || '')+'</td>'+
+        '<td>'+statusBadge(n)+'</td>'+
+        '<td>'+(n.liquidada || '—')+'</td>'+
+        '<td>'+(n.emissao || '—')+'</td>'+
+        '<td>'+(n.vencimento || '—')+'</td>'+
+        '<td class="right mono">'+fmtMoney(n.valor_bruto||0)+'</td>'+
+      '</tr>';
+    });
+  }
+  document.getElementById('tbl-detalhe-body').innerHTML = detHtml;
+}
+
+['f-empresa','f-fundo','f-status'].forEach(id=>{
+  document.getElementById(id).addEventListener('change', render);
+});
+
+populateFundos();
+render();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>const FONT_URL = "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"; const XLSX_CDN = "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";</script>
+<script>const UPLOAD_JS_SRC = "\nfunction setStatus(msg, kind){\n  const el = document.getElementById('upload-status');\n  el.textContent = msg;\n  el.className = 'status-msg' + (kind ? ' ' + kind : '');\n}\n\nfunction pad2(n){ return String(n).padStart(2,'0'); }\n\nfunction fmtDateJs(v){\n  if(v === null || v === undefined || v === '') return null;\n  if(v instanceof Date && !isNaN(v.getTime())){\n    return pad2(v.getDate()) + '/' + pad2(v.getMonth()+1) + '/' + v.getFullYear();\n  }\n  return String(v).trim();\n}\n\nfunction parseValorJs(v){\n  if(v === null || v === undefined || v === '') return {num:null, texto:null};\n  if(typeof v === 'number') return {num:v, texto:null};\n  const s = String(v).trim();\n  const cleaned = s.replace(/[^\\d,.\\-]/g,'').replace(/\\./g,'').replace(',', '.');\n  const num = parseFloat(cleaned);\n  return {num: isNaN(num) ? null : num, texto: s};\n}\n\nfunction parseWorkbookToNotas(workbook){\n  const sheetName = workbook.SheetNames.includes('NF') ? 'NF' : workbook.SheetNames[0];\n  const ws = workbook.Sheets[sheetName];\n  const aoa = XLSX.utils.sheet_to_json(ws, {header:1, defval:null, raw:true});\n  const dataRows = aoa.slice(1);\n  const notas = [];\n\n  for(const row of dataRows){\n    const empresaRaw = row[0];\n    const nf = row[1];\n    const orgao = row[2];\n    const operada = row[3];\n    const liquidada = row[4];\n    const valorBrutoRaw = row[5];\n    const dtEmissao = row[10];\n    const vencimento = row[11];\n    const dtPgto = row[12];\n\n    // linhas de rodap\u00e9 / separador n\u00e3o t\u00eam NF num\u00e9rica v\u00e1lida\n    if(nf === null || nf === undefined || nf === '' || isNaN(Number(nf))) continue;\n    if(empresaRaw === null || empresaRaw === undefined || String(empresaRaw).trim() === '') continue;\n\n    const empresa = String(empresaRaw).trim();\n    const cedida = operada !== null && operada !== undefined && String(operada).trim() !== '';\n    const fundo = cedida ? String(operada).trim() : null;\n\n    const {num: valorBrutoNum, texto: valorTexto} = parseValorJs(valorBrutoRaw);\n\n    let isPaga = false, pgtoData = null, pgtoTexto = null;\n    if(dtPgto !== null && dtPgto !== undefined && dtPgto !== ''){\n      isPaga = true;\n      if(dtPgto instanceof Date && !isNaN(dtPgto.getTime())){\n        pgtoData = fmtDateJs(dtPgto);\n      } else {\n        pgtoTexto = String(dtPgto).trim();\n      }\n    }\n    const status = isPaga ? 'paga' : 'aberto';\n    const statusDisplay = (isPaga && pgtoTexto) ? 'pago_nota' : status;\n\n    notas.push({\n      empresa: empresa,\n      nf: Number(nf),\n      orgao: orgao,\n      fundo: fundo,\n      cedida: cedida,\n      liquidada: fmtDateJs(liquidada),\n      valor_bruto: valorBrutoNum !== null ? Math.round(valorBrutoNum * 100) / 100 : null,\n      valor_bruto_texto_original: (typeof valorBrutoRaw === 'string') ? valorTexto : null,\n      emissao: fmtDateJs(dtEmissao),\n      vencimento: fmtDateJs(vencimento),\n      status: status,\n      status_display: statusDisplay,\n      pgto_data: pgtoData,\n      pgto_texto: pgtoTexto,\n    });\n  }\n  return notas;\n}\n\nfunction buildFullDocument(notasArray){\n  const notasJson = JSON.stringify(notasArray);\n  return '<!DOCTYPE html>\\n<html><head>' +\n    '<meta charset=\"UTF-8\">' +\n    '<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, viewport-fit=cover\">' +\n    '<title>NFs Cedidas Trapisa</title>' +\n    '<link rel=\"stylesheet\" href=\"' + FONT_URL + '\">' +\n    '<script>const STYLE_CSS_SRC = ' + JSON.stringify(STYLE_CSS_SRC) + ';<' + '/script>' +\n    '<style>' + STYLE_CSS_SRC + '</style>' +\n    '</head><body>' +\n    '<script>const BODY_TEMPLATE_SRC = ' + JSON.stringify(BODY_TEMPLATE_SRC) + ';<' + '/script>' +\n    BODY_TEMPLATE_SRC +\n    '<script id=\"notas-data\">window.NOTAS = ' + notasJson + ';<' + '/script>' +\n    '<script>const RENDER_JS_SRC = ' + JSON.stringify(RENDER_JS_SRC) + ';<' + '/script>' +\n    '<script>' + RENDER_JS_SRC + '<' + '/script>' +\n    '<script src=\"' + XLSX_CDN + '\"><' + '/script>' +\n    '<script>const FONT_URL = ' + JSON.stringify(FONT_URL) + '; const XLSX_CDN = ' + JSON.stringify(XLSX_CDN) + ';<' + '/script>' +\n    '<script>const UPLOAD_JS_SRC = ' + JSON.stringify(UPLOAD_JS_SRC) + ';<' + '/script>' +\n    '<script>' + UPLOAD_JS_SRC + '<' + '/script>' +\n    '<script>const LOGIN_JS_SRC = ' + JSON.stringify(LOGIN_JS_SRC) + ';<' + '/script>' +\n    '<script>' + LOGIN_JS_SRC + '<' + '/script>' +\n    '</body></html>';\n}\n\ndocument.getElementById('file-input').addEventListener('change', async (ev)=>{\n  const file = ev.target.files && ev.target.files[0];\n  if(!file) return;\n  const btn = document.querySelector('label[for=\"file-input\"]');\n  btn.style.pointerEvents = 'none';\n  setStatus('Lendo planilha...', 'pending');\n  try{\n    const buf = await file.arrayBuffer();\n    const wb = XLSX.read(buf, {type:'array', cellDates:true});\n    const notas = parseWorkbookToNotas(wb);\n    if(notas.length === 0){\n      setStatus('N\u00e3o encontrei notas v\u00e1lidas nessa planilha \u2014 confira se \u00e9 o arquivo certo.', 'error');\n      btn.style.pointerEvents = '';\n      return;\n    }\n\n    window.NOTAS = notas;\n    document.getElementById('notas-data').textContent = 'window.NOTAS = ' + JSON.stringify(notas) + ';';\n    populateFundos();\n    render();\n\n    setStatus(notas.length + ' notas carregadas. Publicando para todos...', 'pending');\n\n    const artifact = (window.claude && typeof window.claude.use === 'function')\n      ? await window.claude.use('artifact')\n      : null;\n\n    if(!artifact){\n      setStatus('Dados atualizados nesta visualiza\u00e7\u00e3o, mas sem permiss\u00e3o para publicar \u2014 a mudan\u00e7a n\u00e3o fica salva para quem reabrir o link.', 'warning');\n      btn.style.pointerEvents = '';\n      return;\n    }\n\n    try{\n      await artifact.publish(buildFullDocument(notas));\n      setStatus('Planilha atualizada e publicada \u2014 todos que abrirem este link j\u00e1 veem os dados novos.', 'success');\n    } catch(err){\n      const code = err && err.code;\n      if(code === 'not_writer' || code === 'not_granted' || code === 'consent_required'){\n        setStatus('Dados atualizados aqui, mas voc\u00ea n\u00e3o tem permiss\u00e3o de escrita para publicar esta p\u00e1gina.', 'warning');\n      } else if(code === 'conflict'){\n        setStatus('Algu\u00e9m publicou uma vers\u00e3o mais nova ao mesmo tempo \u2014 a p\u00e1gina vai recarregar com ela.', 'warning');\n      } else if(code === 'too_large'){\n        setStatus('Essa planilha ficou grande demais para publicar. Fale com quem gerou o dashboard.', 'error');\n      } else {\n        setStatus('Falha ao publicar: ' + (err && err.message ? err.message : 'erro desconhecido') + '.', 'error');\n      }\n    }\n  } catch(err){\n    setStatus('Erro ao ler o arquivo: ' + (err && err.message ? err.message : err), 'error');\n  } finally {\n    btn.style.pointerEvents = '';\n    ev.target.value = '';\n  }\n});\n";</script>
+<script>
+function setStatus(msg, kind){
+  const el = document.getElementById('upload-status');
+  el.textContent = msg;
+  el.className = 'status-msg' + (kind ? ' ' + kind : '');
+}
+
+function pad2(n){ return String(n).padStart(2,'0'); }
+
+function fmtDateJs(v){
+  if(v === null || v === undefined || v === '') return null;
+  if(v instanceof Date && !isNaN(v.getTime())){
+    return pad2(v.getDate()) + '/' + pad2(v.getMonth()+1) + '/' + v.getFullYear();
+  }
+  return String(v).trim();
+}
+
+function parseValorJs(v){
+  if(v === null || v === undefined || v === '') return {num:null, texto:null};
+  if(typeof v === 'number') return {num:v, texto:null};
+  const s = String(v).trim();
+  const cleaned = s.replace(/[^\d,.\-]/g,'').replace(/\./g,'').replace(',', '.');
+  const num = parseFloat(cleaned);
+  return {num: isNaN(num) ? null : num, texto: s};
+}
+
+function parseWorkbookToNotas(workbook){
+  const sheetName = workbook.SheetNames.includes('NF') ? 'NF' : workbook.SheetNames[0];
+  const ws = workbook.Sheets[sheetName];
+  const aoa = XLSX.utils.sheet_to_json(ws, {header:1, defval:null, raw:true});
+  const dataRows = aoa.slice(1);
+  const notas = [];
+
+  for(const row of dataRows){
+    const empresaRaw = row[0];
+    const nf = row[1];
+    const orgao = row[2];
+    const operada = row[3];
+    const liquidada = row[4];
+    const valorBrutoRaw = row[5];
+    const dtEmissao = row[10];
+    const vencimento = row[11];
+    const dtPgto = row[12];
+
+    // linhas de rodapé / separador não têm NF numérica válida
+    if(nf === null || nf === undefined || nf === '' || isNaN(Number(nf))) continue;
+    if(empresaRaw === null || empresaRaw === undefined || String(empresaRaw).trim() === '') continue;
+
+    const empresa = String(empresaRaw).trim();
+    const cedida = operada !== null && operada !== undefined && String(operada).trim() !== '';
+    const fundo = cedida ? String(operada).trim() : null;
+
+    const {num: valorBrutoNum, texto: valorTexto} = parseValorJs(valorBrutoRaw);
+
+    let isPaga = false, pgtoData = null, pgtoTexto = null;
+    if(dtPgto !== null && dtPgto !== undefined && dtPgto !== ''){
+      isPaga = true;
+      if(dtPgto instanceof Date && !isNaN(dtPgto.getTime())){
+        pgtoData = fmtDateJs(dtPgto);
+      } else {
+        pgtoTexto = String(dtPgto).trim();
+      }
+    }
+    const status = isPaga ? 'paga' : 'aberto';
+    const statusDisplay = (isPaga && pgtoTexto) ? 'pago_nota' : status;
+
+    notas.push({
+      empresa: empresa,
+      nf: Number(nf),
+      orgao: orgao,
+      fundo: fundo,
+      cedida: cedida,
+      liquidada: fmtDateJs(liquidada),
+      valor_bruto: valorBrutoNum !== null ? Math.round(valorBrutoNum * 100) / 100 : null,
+      valor_bruto_texto_original: (typeof valorBrutoRaw === 'string') ? valorTexto : null,
+      emissao: fmtDateJs(dtEmissao),
+      vencimento: fmtDateJs(vencimento),
+      status: status,
+      status_display: statusDisplay,
+      pgto_data: pgtoData,
+      pgto_texto: pgtoTexto,
+    });
+  }
+  return notas;
+}
+
+function buildFullDocument(notasArray){
+  const notasJson = JSON.stringify(notasArray);
+  return '<!DOCTYPE html>\n<html><head>' +
+    '<meta charset="UTF-8">' +
+    '<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">' +
+    '<title>NFs Cedidas Trapisa</title>' +
+    '<link rel="stylesheet" href="' + FONT_URL + '">' +
+    '<script>const STYLE_CSS_SRC = ' + JSON.stringify(STYLE_CSS_SRC) + ';<' + '/script>' +
+    '<style>' + STYLE_CSS_SRC + '</style>' +
+    '</head><body>' +
+    '<script>const BODY_TEMPLATE_SRC = ' + JSON.stringify(BODY_TEMPLATE_SRC) + ';<' + '/script>' +
+    BODY_TEMPLATE_SRC +
+    '<script id="notas-data">window.NOTAS = ' + notasJson + ';<' + '/script>' +
+    '<script>const RENDER_JS_SRC = ' + JSON.stringify(RENDER_JS_SRC) + ';<' + '/script>' +
+    '<script>' + RENDER_JS_SRC + '<' + '/script>' +
+    '<script src="' + XLSX_CDN + '"><' + '/script>' +
+    '<script>const FONT_URL = ' + JSON.stringify(FONT_URL) + '; const XLSX_CDN = ' + JSON.stringify(XLSX_CDN) + ';<' + '/script>' +
+    '<script>const UPLOAD_JS_SRC = ' + JSON.stringify(UPLOAD_JS_SRC) + ';<' + '/script>' +
+    '<script>' + UPLOAD_JS_SRC + '<' + '/script>' +
+    '<script>const LOGIN_JS_SRC = ' + JSON.stringify(LOGIN_JS_SRC) + ';<' + '/script>' +
+    '<script>' + LOGIN_JS_SRC + '<' + '/script>' +
+    '</body></html>';
+}
+
+document.getElementById('file-input').addEventListener('change', async (ev)=>{
+  const file = ev.target.files && ev.target.files[0];
+  if(!file) return;
+  const btn = document.querySelector('label[for="file-input"]');
+  btn.style.pointerEvents = 'none';
+  setStatus('Lendo planilha...', 'pending');
+  try{
+    const buf = await file.arrayBuffer();
+    const wb = XLSX.read(buf, {type:'array', cellDates:true});
+    const notas = parseWorkbookToNotas(wb);
+    if(notas.length === 0){
+      setStatus('Não encontrei notas válidas nessa planilha — confira se é o arquivo certo.', 'error');
+      btn.style.pointerEvents = '';
+      return;
+    }
+
+    window.NOTAS = notas;
+    document.getElementById('notas-data').textContent = 'window.NOTAS = ' + JSON.stringify(notas) + ';';
+    populateFundos();
+    render();
+
+    setStatus(notas.length + ' notas carregadas. Publicando para todos...', 'pending');
+
+    const artifact = (window.claude && typeof window.claude.use === 'function')
+      ? await window.claude.use('artifact')
+      : null;
+
+    if(!artifact){
+      setStatus('Dados atualizados nesta visualização, mas sem permissão para publicar — a mudança não fica salva para quem reabrir o link.', 'warning');
+      btn.style.pointerEvents = '';
+      return;
+    }
+
+    try{
+      await artifact.publish(buildFullDocument(notas));
+      setStatus('Planilha atualizada e publicada — todos que abrirem este link já veem os dados novos.', 'success');
+    } catch(err){
+      const code = err && err.code;
+      if(code === 'not_writer' || code === 'not_granted' || code === 'consent_required'){
+        setStatus('Dados atualizados aqui, mas você não tem permissão de escrita para publicar esta página.', 'warning');
+      } else if(code === 'conflict'){
+        setStatus('Alguém publicou uma versão mais nova ao mesmo tempo — a página vai recarregar com ela.', 'warning');
+      } else if(code === 'too_large'){
+        setStatus('Essa planilha ficou grande demais para publicar. Fale com quem gerou o dashboard.', 'error');
+      } else {
+        setStatus('Falha ao publicar: ' + (err && err.message ? err.message : 'erro desconhecido') + '.', 'error');
+      }
+    }
+  } catch(err){
+    setStatus('Erro ao ler o arquivo: ' + (err && err.message ? err.message : err), 'error');
+  } finally {
+    btn.style.pointerEvents = '';
+    ev.target.value = '';
+  }
+});
+</script>
+<script>const LOGIN_JS_SRC = "\nconst AUTH_HASH = \"a44a53b1e6d0d47ffa8bcc880296188cf9bd59dbe7bef98e397201a6f9f5ce2d\";\nconst AUTH_SESSION_KEY = \"trapisa_nf_auth_v1\";\nconst AUTH_MAX_ATTEMPTS = 5;\nconst AUTH_LOCK_MS = 30000;\n\nasync function sha256Hex(str){\n  const enc = new TextEncoder().encode(str);\n  const buf = await crypto.subtle.digest('SHA-256', enc);\n  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');\n}\n\nfunction authGet(key){\n  try{ return sessionStorage.getItem(key); }catch(e){ return null; }\n}\nfunction authSet(key, val){\n  try{ sessionStorage.setItem(key, val); }catch(e){ /* private mode etc \u2014 segue sem persistir */ }\n}\n\nfunction showApp(){\n  document.getElementById('login-screen').hidden = true;\n  document.getElementById('app-content').hidden = false;\n}\n\nfunction loginLockRemaining(){\n  const until = parseInt(authGet(AUTH_SESSION_KEY + '_lock') || '0', 10);\n  return Math.max(0, until - Date.now());\n}\n\nfunction initLogin(){\n  if(authGet(AUTH_SESSION_KEY) === '1'){\n    showApp();\n    return;\n  }\n\n  const form = document.getElementById('login-form');\n  const errorEl = document.getElementById('login-error');\n  const submitBtn = document.getElementById('login-submit');\n\n  const remaining = loginLockRemaining();\n  if(remaining > 0){\n    submitBtn.disabled = true;\n    errorEl.textContent = 'Muitas tentativas. Tente novamente em ' + Math.ceil(remaining/1000) + 's.';\n    setTimeout(()=>{ submitBtn.disabled = false; errorEl.textContent = ''; }, remaining);\n  }\n\n  form.addEventListener('submit', async (ev)=>{\n    ev.preventDefault();\n    if(loginLockRemaining() > 0) return;\n\n    const user = document.getElementById('login-user').value.trim();\n    const pass = document.getElementById('login-pass').value;\n    submitBtn.disabled = true;\n    errorEl.textContent = '';\n\n    try{\n      const hash = await sha256Hex(user + ':' + pass);\n      if(hash === AUTH_HASH){\n        authSet(AUTH_SESSION_KEY, '1');\n        authSet(AUTH_SESSION_KEY + '_attempts', '0');\n        showApp();\n      } else {\n        const attempts = parseInt(authGet(AUTH_SESSION_KEY + '_attempts') || '0', 10) + 1;\n        authSet(AUTH_SESSION_KEY + '_attempts', String(attempts));\n        if(attempts >= AUTH_MAX_ATTEMPTS){\n          authSet(AUTH_SESSION_KEY + '_lock', String(Date.now() + AUTH_LOCK_MS));\n          authSet(AUTH_SESSION_KEY + '_attempts', '0');\n          errorEl.textContent = 'Muitas tentativas incorretas. Tente novamente em ' + Math.ceil(AUTH_LOCK_MS/1000) + 's.';\n          setTimeout(()=>{ submitBtn.disabled = false; errorEl.textContent = ''; }, AUTH_LOCK_MS);\n          return;\n        }\n        errorEl.textContent = 'Usu\u00e1rio ou senha incorretos.';\n        document.getElementById('login-pass').value = '';\n        document.getElementById('login-pass').focus();\n      }\n    } catch(e){\n      errorEl.textContent = 'Erro ao validar login neste navegador.';\n    } finally {\n      if(loginLockRemaining() <= 0) submitBtn.disabled = false;\n    }\n  });\n}\n\ninitLogin();\n";</script>
+<script>
+const AUTH_HASH = "a44a53b1e6d0d47ffa8bcc880296188cf9bd59dbe7bef98e397201a6f9f5ce2d";
+const AUTH_SESSION_KEY = "trapisa_nf_auth_v1";
+const AUTH_MAX_ATTEMPTS = 5;
+const AUTH_LOCK_MS = 30000;
+
+async function sha256Hex(str){
+  const enc = new TextEncoder().encode(str);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+function authGet(key){
+  try{ return sessionStorage.getItem(key); }catch(e){ return null; }
+}
+function authSet(key, val){
+  try{ sessionStorage.setItem(key, val); }catch(e){ /* private mode etc — segue sem persistir */ }
+}
+
+function showApp(){
+  document.getElementById('login-screen').hidden = true;
+  document.getElementById('app-content').hidden = false;
+}
+
+function loginLockRemaining(){
+  const until = parseInt(authGet(AUTH_SESSION_KEY + '_lock') || '0', 10);
+  return Math.max(0, until - Date.now());
+}
+
+function initLogin(){
+  if(authGet(AUTH_SESSION_KEY) === '1'){
+    showApp();
+    return;
+  }
+
+  const form = document.getElementById('login-form');
+  const errorEl = document.getElementById('login-error');
+  const submitBtn = document.getElementById('login-submit');
+
+  const remaining = loginLockRemaining();
+  if(remaining > 0){
+    submitBtn.disabled = true;
+    errorEl.textContent = 'Muitas tentativas. Tente novamente em ' + Math.ceil(remaining/1000) + 's.';
+    setTimeout(()=>{ submitBtn.disabled = false; errorEl.textContent = ''; }, remaining);
+  }
+
+  form.addEventListener('submit', async (ev)=>{
+    ev.preventDefault();
+    if(loginLockRemaining() > 0) return;
+
+    const user = document.getElementById('login-user').value.trim();
+    const pass = document.getElementById('login-pass').value;
+    submitBtn.disabled = true;
+    errorEl.textContent = '';
+
+    try{
+      const hash = await sha256Hex(user + ':' + pass);
+      if(hash === AUTH_HASH){
+        authSet(AUTH_SESSION_KEY, '1');
+        authSet(AUTH_SESSION_KEY + '_attempts', '0');
+        showApp();
+      } else {
+        const attempts = parseInt(authGet(AUTH_SESSION_KEY + '_attempts') || '0', 10) + 1;
+        authSet(AUTH_SESSION_KEY + '_attempts', String(attempts));
+        if(attempts >= AUTH_MAX_ATTEMPTS){
+          authSet(AUTH_SESSION_KEY + '_lock', String(Date.now() + AUTH_LOCK_MS));
+          authSet(AUTH_SESSION_KEY + '_attempts', '0');
+          errorEl.textContent = 'Muitas tentativas incorretas. Tente novamente em ' + Math.ceil(AUTH_LOCK_MS/1000) + 's.';
+          setTimeout(()=>{ submitBtn.disabled = false; errorEl.textContent = ''; }, AUTH_LOCK_MS);
+          return;
+        }
+        errorEl.textContent = 'Usuário ou senha incorretos.';
+        document.getElementById('login-pass').value = '';
+        document.getElementById('login-pass').focus();
+      }
+    } catch(e){
+      errorEl.textContent = 'Erro ao validar login neste navegador.';
+    } finally {
+      if(loginLockRemaining() <= 0) submitBtn.disabled = false;
+    }
+  });
+}
+
+initLogin();
+</script>
